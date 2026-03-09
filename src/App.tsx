@@ -103,6 +103,7 @@ const FairyLights = () => {
 export default function App() {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   useEffect(() => {
     setLang(getInitialLang());
@@ -139,7 +140,7 @@ export default function App() {
       <FairyLights />
 
       {/* Top Navigation (Not Sticky) */}
-      <nav className="absolute top-0 left-0 right-0 z-40 flex justify-center gap-4 sm:gap-8 p-6 sm:p-8 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-zinc-400">
+      <nav className="absolute top-0 left-0 right-0 z-40 flex justify-center gap-4 sm:gap-8 p-6 sm:p-8 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-400">
         {sections.filter(s => s.id !== 'welcome').map(s => (
           <a key={s.id} href={`#${s.id}`} className="hover:text-amber-100 transition-colors">
             {t.nav[s.id as keyof typeof t.nav]}
@@ -148,23 +149,41 @@ export default function App() {
       </nav>
 
       {/* Language Switcher */}
-      <div className="absolute top-6 right-6 z-50">
-        <div className="relative group">
-          <button className="flex items-center gap-2 text-zinc-400 hover:text-amber-100 transition-colors text-[10px] sm:text-xs uppercase tracking-[0.2em]">
-            <Globe className="w-4 h-4" />
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50">
+        {isLangMenuOpen && (
+          <div className="fixed inset-0" onClick={() => setIsLangMenuOpen(false)} />
+        )}
+        <div className="relative z-50">
+          <button 
+            onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+            className="flex items-center gap-2 text-zinc-400 hover:text-amber-100 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] p-2"
+          >
+            <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="hidden sm:inline">{lang === 'en' ? 'EN' : lang === 'de' ? 'DE' : 'IT'}</span>
           </button>
-          <div className="absolute right-0 mt-2 py-2 w-28 bg-[#050505]/90 backdrop-blur-md border border-white/10 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col">
-            {(['en', 'de', 'it'] as Lang[]).map(l => (
-              <button 
-                key={l}
-                onClick={() => setLang(l)}
-                className={`px-4 py-2 text-left text-[10px] sm:text-xs uppercase tracking-[0.2em] hover:bg-white/5 transition-colors ${lang === l ? 'text-amber-200' : 'text-zinc-400'}`}
+          <AnimatePresence>
+            {isLangMenuOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute right-0 mt-2 py-2 w-36 bg-[#050505]/95 backdrop-blur-md border border-white/10 rounded-lg flex flex-col shadow-xl"
               >
-                {l === 'en' ? 'English' : l === 'de' ? 'Deutsch' : 'Italiano'}
-              </button>
-            ))}
-          </div>
+                {(['en', 'de', 'it'] as Lang[]).map(l => (
+                  <button 
+                    key={l}
+                    onClick={() => {
+                      setLang(l);
+                      setIsLangMenuOpen(false);
+                    }}
+                    className={`px-5 py-3 text-left text-xs sm:text-sm uppercase tracking-[0.2em] hover:bg-white/5 transition-colors ${lang === l ? 'text-amber-200' : 'text-zinc-400'}`}
+                  >
+                    {l === 'en' ? 'English' : l === 'de' ? 'Deutsch' : 'Italiano'}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -174,7 +193,7 @@ export default function App() {
           activeSectionIndex > 0 ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
         }`}
       >
-        <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs sm:text-sm md:text-base text-zinc-200 font-serif text-center">
+        <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-1 text-sm sm:text-base md:text-lg text-zinc-200 font-serif text-center">
           <AnimatePresence mode="popLayout">
             {activeSectionIndex >= 1 && (
               <SummaryItem key="names" showDot={false}>
@@ -212,7 +231,7 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-center"
           >
-            <h2 className="text-[10px] sm:text-xs uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
+            <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
               {t.welcome.subtitle}
             </h2>
             <h1 className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 tracking-tight leading-none">
@@ -220,8 +239,8 @@ export default function App() {
               <span className="text-amber-200/40 italic mx-4 text-5xl sm:text-7xl md:text-8xl">&</span> <br className="md:hidden" />
               Federico
             </h1>
-            <div className="flex items-center justify-center gap-3 sm:gap-4 text-lg sm:text-xl md:text-2xl font-serif text-zinc-300">
-              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+            <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
               <span className="tracking-wide">{t.welcome.date}</span>
             </div>
           </motion.div>
@@ -236,13 +255,13 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-center max-w-2xl w-full"
           >
-            <h2 className="text-[10px] sm:text-xs uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
+            <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
               {t.ceremony.title}
             </h2>
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
               15:30
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-10 sm:mb-14">
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-10 sm:mb-14">
               <span>Salone Borsellino</span>
               <span className="text-zinc-400">Palazzo Vermexio, Siracusa</span>
             </div>
@@ -250,9 +269,9 @@ export default function App() {
               href="https://maps.app.goo.gl/FM1xH1HefZ9yHUss7" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-zinc-300"
+              className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300"
             >
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-amber-200/60" />
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
               {t.ceremony.map}
             </a>
           </motion.div>
@@ -267,13 +286,13 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-center max-w-2xl w-full"
           >
-            <h2 className="text-[10px] sm:text-xs uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
+            <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
               {t.reception.title}
             </h2>
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
               19:00
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-10 sm:mb-14">
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-10 sm:mb-14">
               <span>Ristorante La Trota</span>
               <span className="text-zinc-400">Palazzolo Acreide</span>
             </div>
@@ -281,9 +300,9 @@ export default function App() {
               href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-zinc-300"
+              className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300"
             >
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-amber-200/60" />
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
               {t.reception.map}
             </a>
           </motion.div>
@@ -298,15 +317,15 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-center max-w-2xl w-full"
           >
-            <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-amber-200/40 mx-auto mb-8 sm:mb-10" />
+            <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-amber-200/40 mx-auto mb-8 sm:mb-10" />
             <h2 className="text-5xl sm:text-7xl md:text-8xl font-serif font-light mb-6 sm:mb-8 text-zinc-100">
               {t.rsvp.title}
             </h2>
-            <p className="text-zinc-400 mb-10 sm:mb-14 font-serif text-lg sm:text-xl md:text-2xl max-w-md mx-auto leading-relaxed">
+            <p className="text-zinc-400 mb-10 sm:mb-14 font-serif text-xl sm:text-2xl md:text-3xl max-w-md mx-auto leading-relaxed">
               {t.rsvp.desc}
             </p>
             <button 
-              className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] font-medium w-full sm:w-auto"
             >
               {t.rsvp.btn}
             </button>
