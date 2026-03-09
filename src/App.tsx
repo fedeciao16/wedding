@@ -61,13 +61,13 @@ const FairyLights = () => {
   const [lights, setLights] = useState<{id: number, top: string, left: string, duration: number, delay: number, size: number}[]>([]);
   
   useEffect(() => {
-    setLights(Array.from({ length: 100 }).map((_, i) => ({
+    setLights(Array.from({ length: 150 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
       duration: Math.random() * 3 + 2,
       delay: Math.random() * 2,
-      size: Math.random() * 2.5 + 1,
+      size: Math.random() * 2.5 + 1.5,
     })));
   }, []);
 
@@ -76,17 +76,17 @@ const FairyLights = () => {
       {lights.map((light) => (
         <motion.div
           key={light.id}
-          className="absolute rounded-full bg-amber-200/40"
+          className="absolute rounded-full bg-amber-100/80"
           style={{
             top: light.top,
             left: light.left,
             width: light.size,
             height: light.size,
-            boxShadow: `0 0 ${light.size * 3}px ${light.size}px rgba(253, 230, 138, 0.2)`,
+            boxShadow: `0 0 ${light.size * 4}px ${light.size * 1.5}px rgba(253, 230, 138, 0.4)`,
           }}
           animate={{
-            opacity: [0.1, 0.6, 0.1],
-            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.9, 0.2],
+            scale: [1, 1.3, 1],
           }}
           transition={{
             duration: light.duration,
@@ -104,10 +104,18 @@ export default function App() {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setLang(getInitialLang());
   }, []);
+
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => setToastMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -139,53 +147,55 @@ export default function App() {
       <div className="bg-noise" />
       <FairyLights />
 
-      {/* Top Navigation (Not Sticky) */}
-      <nav className="absolute top-0 left-0 right-0 z-40 flex justify-center gap-4 sm:gap-8 p-6 sm:p-8 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-400">
-        {sections.filter(s => s.id !== 'welcome').map(s => (
-          <a key={s.id} href={`#${s.id}`} className="hover:text-amber-100 transition-colors">
-            {t.nav[s.id as keyof typeof t.nav]}
-          </a>
-        ))}
-      </nav>
+      {/* Header: Top Navigation & Language Switcher */}
+      <header className="absolute top-0 left-0 right-0 z-40 flex items-center justify-center p-6 sm:p-8 pointer-events-none">
+        <nav className="flex gap-4 sm:gap-8 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-400 pointer-events-auto">
+          {sections.filter(s => s.id !== 'welcome').map(s => (
+            <a key={s.id} href={`#${s.id}`} className="hover:text-amber-100 transition-colors">
+              {t.nav[s.id as keyof typeof t.nav]}
+            </a>
+          ))}
+        </nav>
 
-      {/* Language Switcher */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50">
-        {isLangMenuOpen && (
-          <div className="fixed inset-0" onClick={() => setIsLangMenuOpen(false)} />
-        )}
-        <div className="relative z-50">
-          <button 
-            onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-            className="flex items-center gap-2 text-zinc-400 hover:text-amber-100 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] p-2"
-          >
-            <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="hidden sm:inline">{lang === 'en' ? 'EN' : lang === 'de' ? 'DE' : 'IT'}</span>
-          </button>
-          <AnimatePresence>
-            {isLangMenuOpen && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 py-2 w-36 bg-[#050505]/95 backdrop-blur-md border border-white/10 rounded-lg flex flex-col shadow-xl"
-              >
-                {(['en', 'de', 'it'] as Lang[]).map(l => (
-                  <button 
-                    key={l}
-                    onClick={() => {
-                      setLang(l);
-                      setIsLangMenuOpen(false);
-                    }}
-                    className={`px-5 py-3 text-left text-xs sm:text-sm uppercase tracking-[0.2em] hover:bg-white/5 transition-colors ${lang === l ? 'text-amber-200' : 'text-zinc-400'}`}
-                  >
-                    {l === 'en' ? 'English' : l === 'de' ? 'Deutsch' : 'Italiano'}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+        {/* Language Switcher */}
+        <div className="absolute right-6 sm:right-8 pointer-events-auto">
+          {isLangMenuOpen && (
+            <div className="fixed inset-0" onClick={() => setIsLangMenuOpen(false)} />
+          )}
+          <div className="relative z-50">
+            <button 
+              onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+              className="flex items-center gap-2 text-zinc-400 hover:text-amber-100 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] p-2"
+            >
+              <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="hidden sm:inline">{lang === 'en' ? 'EN' : lang === 'de' ? 'DE' : 'IT'}</span>
+            </button>
+            <AnimatePresence>
+              {isLangMenuOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute right-0 mt-2 py-2 w-36 bg-[#050505]/95 backdrop-blur-md border border-white/10 rounded-lg flex flex-col shadow-xl"
+                >
+                  {(['en', 'de', 'it'] as Lang[]).map(l => (
+                    <button 
+                      key={l}
+                      onClick={() => {
+                        setLang(l);
+                        setIsLangMenuOpen(false);
+                      }}
+                      className={`px-5 py-3 text-left text-xs sm:text-sm uppercase tracking-[0.2em] hover:bg-white/5 transition-colors ${lang === l ? 'text-amber-200' : 'text-zinc-400'}`}
+                    >
+                      {l === 'en' ? 'English' : l === 'de' ? 'Deutsch' : 'Italiano'}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Sticky Summary Header */}
       <div 
@@ -325,6 +335,7 @@ export default function App() {
               {t.rsvp.desc}
             </p>
             <button 
+              onClick={() => setToastMessage('Coming soon!')}
               className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] font-medium w-full sm:w-auto"
             >
               {t.rsvp.btn}
@@ -332,6 +343,20 @@ export default function App() {
           </motion.div>
         </section>
       </main>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 50, x: '-50%' }}
+            className="fixed bottom-10 left-1/2 z-50 bg-zinc-100 text-[#050505] px-6 py-3 rounded-full text-xs sm:text-sm uppercase tracking-[0.2em] font-medium shadow-2xl whitespace-nowrap"
+          >
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
