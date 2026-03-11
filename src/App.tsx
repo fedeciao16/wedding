@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking } from 'lucide-react';
 
 type Lang = 'en' | 'de' | 'it';
 
@@ -8,24 +8,24 @@ const translations = {
   en: {
     nav: { ceremony: 'Ceremony', reception: 'Reception', rsvp: 'RSVP' },
     welcome: { subtitle: 'We are getting married', date: '19th September 2026', dateShort: '19th Sept 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal', parking: 'Parking:', parkingOr: 'or' },
-    reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal, but bring something warm as Palazzolo Acreide gets cool at night.', parking: 'Parking: Free on-site parking' },
+    ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal', parkingLabel: 'Parking', parkingOr: 'or' },
+    reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal, but bring something warm as Palazzolo Acreide gets cool at night.', parkingLabel: 'Parking', parkingInfo: 'Free on-site parking' },
     rsvp: { title: 'Join Us', desc: 'Please let us know if you can make it to our special day.', btn: 'RSVP Now', giftsTitle: 'Wedding Gifts', giftsDesc: 'Your presence at our wedding is the greatest gift we could ask for! If you would still like to gift us something, then a contribution toward our honeymoon and start into our joint life together would be sincerely appreciated.' },
     countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs' }
   },
   de: {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
     welcome: { subtitle: 'Wir heiraten', date: '19. September 2026', dateShort: '19. Sept 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich', parking: 'Parken:', parkingOr: 'oder' },
-    reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird.', parking: 'Parken: Kostenlose Parkplätze vor Ort' },
+    ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich', parkingLabel: 'Parken', parkingOr: 'oder' },
+    reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird.', parkingLabel: 'Parken', parkingInfo: 'Kostenlose Parkplätze vor Ort' },
     rsvp: { title: 'Feiert mit uns', desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', btn: 'Jetzt zusagen', giftsTitle: 'Geschenke', giftsDesc: 'Eure Anwesenheit auf unserer Hochzeit ist das größte Geschenk, das wir uns wünschen können! Solltet ihr uns dennoch etwas schenken wollen, würden wir uns über einen Beitrag zu unseren Flitterwochen und unserem gemeinsamen Start ins Eheleben sehr freuen.' },
     countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek' }
   },
   it: {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'RSVP' },
     welcome: { subtitle: 'Ci sposiamo', date: '19 Settembre 2026', dateShort: '19 Sett 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale', parking: 'Parcheggio:', parkingOr: 'o' },
-    reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parking: 'Parcheggio: Gratuito in loco' },
+    ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale', parkingLabel: 'Parcheggio', parkingOr: 'o' },
+    reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parkingLabel: 'Parcheggio', parkingInfo: 'Gratuito in loco' },
     rsvp: { title: 'Unisciti a noi', desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', btn: 'Conferma ora', giftsTitle: 'Regali di Nozze', giftsDesc: 'La vostra presenza al nostro matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.' },
     countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec' }
   }
@@ -47,7 +47,7 @@ const getInitialLang = (): Lang => {
   return 'en';
 };
 
-const SummaryItem = ({ children, showDot = true }: { children: React.ReactNode, showDot?: boolean }) => (
+const SummaryItem = ({ children, showDot = true }: { children: React.ReactNode, showDot?: boolean, key?: React.Key }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.9, filter: 'blur(4px)' }}
     animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
@@ -65,14 +65,14 @@ const downloadICS = (event: 'ceremony' | 'reception') => {
 
   if (event === 'ceremony') {
     title = 'Wedding Ceremony - Katharina & Federico';
-    description = 'Wedding Ceremony at Salone Borsellino, Palazzo Vermexio';
-    location = 'Palazzo Vermexio, Piazza del Duomo, 4, 96100 Siracusa SR, Italy';
+    description = 'Wedding Ceremony at Salone Borsellino, Palazzo Vermexio. Map: https://maps.app.goo.gl/FM1xH1HefZ9yHUss7';
+    location = 'Palazzo del Vermexio, Piazza Duomo, 4, 96100 Siracusa SR, Italy';
     startUTC = '20260919T131500Z'; // 15:15 CEST
     endUTC = '20260919T141500Z'; // 16:15 CEST
   } else {
     title = 'Wedding Reception - Katharina & Federico';
-    description = 'Wedding Reception at Ristorante La Trota';
-    location = 'Ristorante La Trota, Via Nazionale, 96010 Palazzolo Acreide SR, Italy';
+    description = 'Wedding Reception at Ristorante La Trota. Map: https://maps.app.goo.gl/szDuGBAqywC3kCAe9';
+    location = 'Ristorante la Trota, Strada Mare Monti, 287, 96010 Palazzolo Acreide SR, Italy';
     startUTC = '20260919T170000Z'; // 19:00 CEST
     endUTC = '20260919T220000Z'; // 00:00 CEST (next day)
   }
@@ -173,7 +173,7 @@ const FairyLights = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-10">
+    <div className="fixed top-0 left-0 w-screen h-[100lvh] overflow-hidden pointer-events-none z-10">
       {lights.map((light) => (
         <motion.div
           key={light.id}
@@ -334,7 +334,7 @@ export default function App() {
 
       <main>
         {/* Welcome Section */}
-        <section id="welcome" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 pt-20">
+        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -359,7 +359,7 @@ export default function App() {
         </section>
 
         {/* Ceremony Section */}
-        <section id="ceremony" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 py-20">
+        <section id="ceremony" className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -378,14 +378,20 @@ export default function App() {
               <span className="text-zinc-400">Palazzo Vermexio, Siracusa</span>
             </div>
             
-            <div className="flex flex-col items-center gap-2 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif max-w-md mx-auto">
-              <p>{t.ceremony.dressCode}</p>
-              <p className="mt-2">
-                {t.ceremony.parking}{' '}
-                <a href="https://www.comune.siracusa.it/vivere-il-comune/luoghi/parcheggio-molo-santantonio" target="_blank" rel="noopener noreferrer" className="text-amber-200/80 hover:text-amber-200 underline underline-offset-4">Molo Sant'Antonio</a>
-                {' '}{t.ceremony.parkingOr}{' '}
-                <a href="https://www.comune.siracusa.it/vivere-il-comune/luoghi/parcheggio-talete" target="_blank" rel="noopener noreferrer" className="text-amber-200/80 hover:text-amber-200 underline underline-offset-4">Talete</a>
-              </p>
+            <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-fit mx-auto text-left">
+              <div className="flex items-start gap-3">
+                <Shirt className="w-5 h-5 text-amber-200/60 shrink-0 mt-0.5" />
+                <p><strong className="text-zinc-200 font-medium">{t.ceremony.dressCodeLabel}:</strong> {t.ceremony.dressCodeInfo}</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <SquareParking className="w-5 h-5 text-amber-200/60 shrink-0 mt-0.5" />
+                <p>
+                  <strong className="text-zinc-200 font-medium">{t.ceremony.parkingLabel}:</strong>{' '}
+                  <a href="https://maps.app.goo.gl/VA9QtitXcEBybxqo9" target="_blank" rel="noopener noreferrer" className="text-amber-200/80 hover:text-amber-200 underline underline-offset-4">Molo Sant'Antonio</a>
+                  {' '}{t.ceremony.parkingOr}{' '}
+                  <a href="https://maps.app.goo.gl/4BdZ1ruhQUUTUTuf9" target="_blank" rel="noopener noreferrer" className="text-amber-200/80 hover:text-amber-200 underline underline-offset-4">Talete</a>
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -410,7 +416,7 @@ export default function App() {
         </section>
 
         {/* Reception Section */}
-        <section id="reception" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 py-20">
+        <section id="reception" className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -429,9 +435,15 @@ export default function App() {
               <span className="text-zinc-400">Palazzolo Acreide</span>
             </div>
 
-            <div className="flex flex-col items-center gap-2 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif max-w-md mx-auto">
-              <p>{t.reception.dressCode}</p>
-              <p className="mt-2">{t.reception.parking}</p>
+            <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-fit mx-auto text-left">
+              <div className="flex items-start gap-3">
+                <Shirt className="w-5 h-5 text-amber-200/60 shrink-0 mt-0.5" />
+                <p><strong className="text-zinc-200 font-medium">{t.reception.dressCodeLabel}:</strong> {t.reception.dressCodeInfo}</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <SquareParking className="w-5 h-5 text-amber-200/60 shrink-0 mt-0.5" />
+                <p><strong className="text-zinc-200 font-medium">{t.reception.parkingLabel}:</strong> {t.reception.parkingInfo}</p>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -456,7 +468,7 @@ export default function App() {
         </section>
 
         {/* RSVP Section */}
-        <section id="rsvp" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 py-20">
+        <section id="rsvp" className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
