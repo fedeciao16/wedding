@@ -373,10 +373,18 @@ export default function App() {
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
               15:15
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-6 sm:mb-8">
-              <span>Salone Borsellino</span>
-              <span className="text-zinc-400">Palazzo Vermexio, Siracusa</span>
-            </div>
+            <a 
+              href="https://maps.app.goo.gl/FM1xH1HefZ9yHUss7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-6 sm:mb-8 hover:text-amber-200/80 transition-colors"
+            >
+              <span className="flex items-center gap-3">
+                Salone Borsellino
+                <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-amber-200/60 group-hover:text-amber-200/80 transition-colors" />
+              </span>
+              <span className="text-zinc-400 group-hover:text-amber-200/60 transition-colors underline underline-offset-8 decoration-white/20 group-hover:decoration-amber-200/40">Palazzo Vermexio, Siracusa</span>
+            </a>
             
             <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-fit mx-auto text-left">
               <div className="flex items-start gap-3">
@@ -395,15 +403,6 @@ export default function App() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a 
-                href="https://maps.app.goo.gl/FM1xH1HefZ9yHUss7" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
-              >
-                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
-                {t.ceremony.map}
-              </a>
               <button 
                 onClick={() => downloadICS('ceremony')}
                 className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
@@ -430,10 +429,18 @@ export default function App() {
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
               19:00
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-6 sm:mb-8">
-              <span>Ristorante La Trota</span>
-              <span className="text-zinc-400">Palazzolo Acreide</span>
-            </div>
+            <a 
+              href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-6 sm:mb-8 hover:text-amber-200/80 transition-colors"
+            >
+              <span className="flex items-center gap-3">
+                Ristorante La Trota
+                <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-amber-200/60 group-hover:text-amber-200/80 transition-colors" />
+              </span>
+              <span className="text-zinc-400 group-hover:text-amber-200/60 transition-colors underline underline-offset-8 decoration-white/20 group-hover:decoration-amber-200/40">Palazzolo Acreide</span>
+            </a>
 
             <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-fit mx-auto text-left">
               <div className="flex items-start gap-3">
@@ -447,15 +454,6 @@ export default function App() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a 
-                href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
-              >
-                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
-                {t.reception.map}
-              </a>
               <button 
                 onClick={() => downloadICS('reception')}
                 className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
