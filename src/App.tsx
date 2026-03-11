@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus } from 'lucide-react';
 
 type Lang = 'en' | 'de' | 'it';
 
@@ -8,23 +8,26 @@ const translations = {
   en: {
     nav: { ceremony: 'Ceremony', reception: 'Reception', rsvp: 'RSVP' },
     welcome: { subtitle: 'We are getting married', date: '19th September 2026', dateShort: '19th Sept 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'The Ceremony', map: 'View on Map' },
-    reception: { title: 'The Reception', map: 'View on Map' },
-    rsvp: { title: 'Join Us', desc: 'Please let us know if you can make it to our special day.', btn: 'RSVP Now' }
+    ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal', parking: 'Recommended Parking:', parkingOr: 'or' },
+    reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal, but bring something warm as Palazzolo Acreide gets cool at night.', parking: 'Parking: Free on-site parking' },
+    rsvp: { title: 'Join Us', desc: 'Please let us know if you can make it to our special day.', btn: 'RSVP Now', giftsTitle: 'Wedding Gifts', giftsDesc: 'Your presence at our wedding is the greatest gift we could ask for! If you would still like to gift us something, then a contribution toward our honeymoon and start into our joint life together would be sincerely appreciated.' },
+    countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs' }
   },
   de: {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
     welcome: { subtitle: 'Wir heiraten', date: '19. September 2026', dateShort: '19. Sept 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen' },
-    reception: { title: 'Die Feier', map: 'Auf Karte ansehen' },
-    rsvp: { title: 'Feiert mit uns', desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', btn: 'Jetzt zusagen' }
+    ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich', parking: 'Empfohlene Parkplätze:', parkingOr: 'oder' },
+    reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird.', parking: 'Parken: Kostenlose Parkplätze vor Ort' },
+    rsvp: { title: 'Feiert mit uns', desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', btn: 'Jetzt zusagen', giftsTitle: 'Geschenke', giftsDesc: 'Eure Anwesenheit auf unserer Hochzeit ist das größte Geschenk, das wir uns wünschen können! Solltet ihr uns dennoch etwas schenken wollen, würden wir uns über einen Beitrag zu unseren Flitterwochen und unserem gemeinsamen Start ins Eheleben sehr freuen.' },
+    countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek' }
   },
   it: {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'RSVP' },
     welcome: { subtitle: 'Ci sposiamo', date: '19 Settembre 2026', dateShort: '19 Sett 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa' },
-    reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa' },
-    rsvp: { title: 'Unisciti a noi', desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', btn: 'Conferma ora' }
+    ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale', parking: 'Parcheggi consigliati:', parkingOr: 'o' },
+    reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parking: 'Parcheggio: Gratuito in loco' },
+    rsvp: { title: 'Unisciti a noi', desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', btn: 'Conferma ora', giftsTitle: 'Regali di Nozze', giftsDesc: 'La vostra presenza al nostro matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.' },
+    countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec' }
   }
 };
 
@@ -56,6 +59,91 @@ const SummaryItem = ({ children, showDot = true }: { children: React.ReactNode, 
     <span>{children}</span>
   </motion.div>
 );
+
+const downloadICS = (event: 'ceremony' | 'reception') => {
+  let title, description, location, startUTC, endUTC;
+
+  if (event === 'ceremony') {
+    title = 'Wedding Ceremony - Katharina & Federico';
+    description = 'Wedding Ceremony at Salone Borsellino, Palazzo Vermexio';
+    location = 'Palazzo Vermexio, Piazza del Duomo, 4, 96100 Siracusa SR, Italy';
+    startUTC = '20260919T131500Z'; // 15:15 CEST
+    endUTC = '20260919T141500Z'; // 16:15 CEST
+  } else {
+    title = 'Wedding Reception - Katharina & Federico';
+    description = 'Wedding Reception at Ristorante La Trota';
+    location = 'Ristorante La Trota, Via Nazionale, 96010 Palazzolo Acreide SR, Italy';
+    startUTC = '20260919T170000Z'; // 19:00 CEST
+    endUTC = '20260919T220000Z'; // 00:00 CEST (next day)
+  }
+
+  const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART:${startUTC}
+DTEND:${endUTC}
+SUMMARY:${title}
+DESCRIPTION:${description}
+LOCATION:${location}
+END:VEVENT
+END:VCALENDAR`;
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.setAttribute('download', `${title.replace(/\s+/g, '_')}.ics`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const Countdown = ({ t }: { t: any }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+
+  useEffect(() => {
+    // 19th September 2026 15:30 CEST (UTC+2) -> 13:30 UTC
+    const targetDate = new Date('2026-09-19T13:30:00Z').getTime();
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          mins: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          secs: Math.floor((difference % (1000 * 60)) / 1000),
+        });
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex gap-4 sm:gap-8 mt-10 sm:mt-14 text-zinc-300 font-serif justify-center">
+      <div className="flex flex-col items-center">
+        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.days}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.days}</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.hours}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.hours}</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.mins}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.mins}</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.secs}</span>
+        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.secs}</span>
+      </div>
+    </div>
+  );
+};
 
 const FairyLights = () => {
   const [lights, setLights] = useState<{id: number, top: string, left: string, duration: number, delay: number, size: number}[]>([]);
@@ -219,7 +307,7 @@ export default function App() {
             )}
             {activeSectionIndex >= 2 && (
               <SummaryItem key="ceremony">
-                15:30 {t.nav.ceremony}
+                15:15 {t.nav.ceremony}
               </SummaryItem>
             )}
             {activeSectionIndex >= 3 && (
@@ -233,7 +321,7 @@ export default function App() {
 
       <main>
         {/* Welcome Section */}
-        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-20">
+        <section id="welcome" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 pt-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -253,11 +341,12 @@ export default function App() {
               <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
               <span className="tracking-wide">{t.welcome.date}</span>
             </div>
+            <Countdown t={t} />
           </motion.div>
         </section>
 
         {/* Ceremony Section */}
-        <section id="ceremony" className="min-h-screen flex flex-col items-center justify-center relative px-6">
+        <section id="ceremony" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -269,26 +358,46 @@ export default function App() {
               {t.ceremony.title}
             </h2>
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
-              15:30
+              15:15
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-10 sm:mb-14">
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-6 sm:mb-8">
               <span>Salone Borsellino</span>
               <span className="text-zinc-400">Palazzo Vermexio, Siracusa</span>
             </div>
-            <a 
-              href="https://maps.app.goo.gl/FM1xH1HefZ9yHUss7" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300"
-            >
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
-              {t.ceremony.map}
-            </a>
+            
+            <div className="flex flex-col items-center gap-2 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif max-w-md mx-auto">
+              <p>{t.ceremony.dressCode}</p>
+              <p className="mt-2">
+                {t.ceremony.parking}{' '}
+                <a href="https://www.comune.siracusa.it/vivere-il-comune/luoghi/parcheggio-molo-santantonio" target="_blank" rel="noopener noreferrer" className="text-amber-200/80 hover:text-amber-200 underline underline-offset-4">Molo Sant'Antonio</a>
+                {' '}{t.ceremony.parkingOr}{' '}
+                <a href="https://www.comune.siracusa.it/vivere-il-comune/luoghi/parcheggio-talete" target="_blank" rel="noopener noreferrer" className="text-amber-200/80 hover:text-amber-200 underline underline-offset-4">Talete</a>
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a 
+                href="https://maps.app.goo.gl/FM1xH1HefZ9yHUss7" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+              >
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+                {t.ceremony.map}
+              </a>
+              <button 
+                onClick={() => downloadICS('ceremony')}
+                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+              >
+                <CalendarPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+                {t.ceremony.calendar}
+              </button>
+            </div>
           </motion.div>
         </section>
 
         {/* Reception Section */}
-        <section id="reception" className="min-h-screen flex flex-col items-center justify-center relative px-6">
+        <section id="reception" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -302,24 +411,39 @@ export default function App() {
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
               19:00
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-10 sm:mb-14">
+            <div className="flex flex-col items-center justify-center gap-2 sm:gap-4 text-2xl sm:text-3xl md:text-4xl font-serif text-zinc-300 mb-6 sm:mb-8">
               <span>Ristorante La Trota</span>
               <span className="text-zinc-400">Palazzolo Acreide</span>
             </div>
-            <a 
-              href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300"
-            >
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
-              {t.reception.map}
-            </a>
+
+            <div className="flex flex-col items-center gap-2 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif max-w-md mx-auto">
+              <p>{t.reception.dressCode}</p>
+              <p className="mt-2">{t.reception.parking}</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a 
+                href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+              >
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+                {t.reception.map}
+              </a>
+              <button 
+                onClick={() => downloadICS('reception')}
+                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+              >
+                <CalendarPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+                {t.reception.calendar}
+              </button>
+            </div>
           </motion.div>
         </section>
 
         {/* RSVP Section */}
-        <section id="rsvp" className="min-h-screen flex flex-col items-center justify-center relative px-6">
+        <section id="rsvp" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -336,10 +460,19 @@ export default function App() {
             </p>
             <button 
               onClick={() => setToastMessage('Coming soon!')}
-              className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] font-medium w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] font-medium w-full sm:w-auto mb-16 sm:mb-20"
             >
               {t.rsvp.btn}
             </button>
+
+            <div className="max-w-xl mx-auto border-t border-white/10 pt-12 sm:pt-16">
+              <h3 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
+                {t.rsvp.giftsTitle}
+              </h3>
+              <p className="text-zinc-400 font-serif text-base sm:text-lg md:text-xl leading-relaxed">
+                {t.rsvp.giftsDesc}
+              </p>
+            </div>
           </motion.div>
         </section>
       </main>
