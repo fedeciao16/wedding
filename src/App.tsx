@@ -8,7 +8,7 @@ const translations = {
   en: {
     nav: { ceremony: 'Ceremony', reception: 'Reception', rsvp: 'RSVP' },
     welcome: { subtitle: 'We are getting married', date: '19th September 2026', dateShort: '19th Sept 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal', parking: 'Recommended Parking:', parkingOr: 'or' },
+    ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal', parking: 'Parking:', parkingOr: 'or' },
     reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCode: 'Dress Code: Formal, but bring something warm as Palazzolo Acreide gets cool at night.', parking: 'Parking: Free on-site parking' },
     rsvp: { title: 'Join Us', desc: 'Please let us know if you can make it to our special day.', btn: 'RSVP Now', giftsTitle: 'Wedding Gifts', giftsDesc: 'Your presence at our wedding is the greatest gift we could ask for! If you would still like to gift us something, then a contribution toward our honeymoon and start into our joint life together would be sincerely appreciated.' },
     countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs' }
@@ -16,7 +16,7 @@ const translations = {
   de: {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
     welcome: { subtitle: 'Wir heiraten', date: '19. September 2026', dateShort: '19. Sept 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich', parking: 'Empfohlene Parkplätze:', parkingOr: 'oder' },
+    ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich', parking: 'Parken:', parkingOr: 'oder' },
     reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCode: 'Dresscode: Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird.', parking: 'Parken: Kostenlose Parkplätze vor Ort' },
     rsvp: { title: 'Feiert mit uns', desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', btn: 'Jetzt zusagen', giftsTitle: 'Geschenke', giftsDesc: 'Eure Anwesenheit auf unserer Hochzeit ist das größte Geschenk, das wir uns wünschen können! Solltet ihr uns dennoch etwas schenken wollen, würden wir uns über einen Beitrag zu unseren Flitterwochen und unserem gemeinsamen Start ins Eheleben sehr freuen.' },
     countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek' }
@@ -24,7 +24,7 @@ const translations = {
   it: {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'RSVP' },
     welcome: { subtitle: 'Ci sposiamo', date: '19 Settembre 2026', dateShort: '19 Sett 2026', dateNumeric: '19.09.26' },
-    ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale', parking: 'Parcheggi consigliati:', parkingOr: 'o' },
+    ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale', parking: 'Parcheggio:', parkingOr: 'o' },
     reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCode: 'Dress Code: Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parking: 'Parcheggio: Gratuito in loco' },
     rsvp: { title: 'Unisciti a noi', desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', btn: 'Conferma ora', giftsTitle: 'Regali di Nozze', giftsDesc: 'La vostra presenza al nostro matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.' },
     countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec' }
@@ -99,12 +99,14 @@ END:VCALENDAR`;
 
 const Countdown = ({ t }: { t: any }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  const [isReady, setIsReady] = useState(false);
+  const [isOver, setIsOver] = useState(false);
 
   useEffect(() => {
-    // 19th September 2026 15:30 CEST (UTC+2) -> 13:30 UTC
-    const targetDate = new Date('2026-09-19T13:30:00Z').getTime();
+    // 19th September 2026 15:15 CEST (UTC+2) -> 13:15 UTC
+    const targetDate = new Date('2026-09-19T13:15:00Z').getTime();
 
-    const interval = setInterval(() => {
+    const calculateTime = () => {
       const now = new Date().getTime();
       const difference = targetDate - now;
 
@@ -115,16 +117,27 @@ const Countdown = ({ t }: { t: any }) => {
           mins: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
           secs: Math.floor((difference % (1000 * 60)) / 1000),
         });
+        setIsReady(true);
       } else {
-        clearInterval(interval);
+        setIsOver(true);
       }
-    }, 1000);
+    };
+
+    calculateTime();
+    const interval = setInterval(calculateTime, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
+  if (isOver) return null;
+
   return (
-    <div className="flex gap-4 sm:gap-8 mt-10 sm:mt-14 text-zinc-300 font-serif justify-center">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isReady ? 1 : 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex gap-4 sm:gap-8 mt-10 sm:mt-14 text-zinc-300 font-serif justify-center"
+    >
       <div className="flex flex-col items-center">
         <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.days}</span>
         <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.days}</span>
@@ -141,7 +154,7 @@ const Countdown = ({ t }: { t: any }) => {
         <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.secs}</span>
         <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.secs}</span>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -321,7 +334,7 @@ export default function App() {
 
       <main>
         {/* Welcome Section */}
-        <section id="welcome" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 pt-20">
+        <section id="welcome" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 pt-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -346,7 +359,7 @@ export default function App() {
         </section>
 
         {/* Ceremony Section */}
-        <section id="ceremony" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 py-20">
+        <section id="ceremony" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -397,7 +410,7 @@ export default function App() {
         </section>
 
         {/* Reception Section */}
-        <section id="reception" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 py-20">
+        <section id="reception" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -443,7 +456,7 @@ export default function App() {
         </section>
 
         {/* RSVP Section */}
-        <section id="rsvp" className="min-h-[100dvh] flex flex-col items-center justify-center relative px-6 py-20">
+        <section id="rsvp" className="min-h-[100svh] flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
