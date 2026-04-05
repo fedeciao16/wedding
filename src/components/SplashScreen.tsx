@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import coupleImg from '../assets/couple.jpg';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -78,11 +79,11 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             className="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-amber-200/30 shadow-[0_0_60px_rgba(253,230,138,0.15)]"
           >
             <img 
-              src="/couple.png" 
+              src={coupleImg} 
               alt="The Couple" 
               className="w-full h-full object-cover"
               onError={(e) => {
-                // Fallback if the user hasn't uploaded the image yet
+                // Fallback if the image fails to load
                 (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop";
               }}
             />
