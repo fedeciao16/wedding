@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User } from 'lucide-react';
+import { SplashScreen } from './components/SplashScreen';
 
 type Lang = 'en' | 'de' | 'it';
 
@@ -723,6 +724,7 @@ const FairyLights = () => {
 };
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -767,6 +769,7 @@ export default function App() {
 
   return (
     <div className="relative w-full">
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className="bg-noise" />
       <FairyLights />
 
