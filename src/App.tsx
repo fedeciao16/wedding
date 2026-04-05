@@ -972,10 +972,10 @@ export default function App() {
               {t.welcome.subtitle}
             </h2>
 
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-6 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2">
-              <div className="text-right text-4xl sm:text-6xl md:text-7xl font-serif font-light tracking-tight break-words">Katharina</div>
-              <div className="text-center text-amber-200/40 italic text-3xl sm:text-5xl md:text-6xl font-serif px-2">&</div>
-              <div className="text-left text-4xl sm:text-6xl md:text-7xl font-serif font-light tracking-tight break-words">Federico</div>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-6 gap-y-2 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2 text-5xl sm:text-7xl md:text-8xl font-serif font-light tracking-tight text-zinc-100">
+              <span className="text-center">Katharina</span>
+              <span className="text-amber-200/40 italic text-4xl sm:text-6xl md:text-7xl px-1">&</span>
+              <span className="text-center">Federico</span>
             </div>
 
             <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-8 sm:mb-12">
