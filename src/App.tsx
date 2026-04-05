@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift } from 'lucide-react';
 import { SplashScreen } from './components/SplashScreen';
+import coupleImg from './assets/couple.jpg';
 
 type Lang = 'en' | 'de' | 'it';
 
@@ -15,8 +16,10 @@ const translations = {
       title: 'Join Us', 
       desc: 'Please let us know if you can make it to our special day.', 
       btn: 'RSVP Now', 
-      giftsTitle: 'Wedding Gifts', 
+      giftsTitle: 'A note on Wedding Gifts', 
       giftsDesc: 'Your presence at our wedding is the greatest gift we could ask for! If you would still like to gift us something, then a contribution toward our honeymoon and start into our joint life together would be sincerely appreciated.',
+      revealDetails: 'Reveal details',
+      copied: 'Copied!',
       form: {
         familyName: 'Family Name',
         familyNamePlaceholder: 'e.g. Schenk/Midolo',
@@ -54,8 +57,10 @@ const translations = {
       title: 'Feiert mit uns', 
       desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', 
       btn: 'Jetzt zusagen', 
-      giftsTitle: 'Geschenke', 
+      giftsTitle: 'Ein paar Worte zu Geschenken', 
       giftsDesc: 'Eure Anwesenheit auf unserer Hochzeit ist das größte Geschenk, das wir uns wünschen können! Solltet ihr uns dennoch etwas schenken wollen, würden wir uns über einen Beitrag zu unseren Flitterwochen und unserem gemeinsamen Start ins Eheleben sehr freuen.',
+      revealDetails: 'Details anzeigen',
+      copied: 'Kopiert!',
       form: {
         familyName: 'Familienname',
         familyNamePlaceholder: 'z.B. Schenk/Midolo',
@@ -93,8 +98,10 @@ const translations = {
       title: 'Unisciti a noi', 
       desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', 
       btn: 'Conferma ora', 
-      giftsTitle: 'Regali di Nozze', 
+      giftsTitle: 'Una nota sui Regali', 
       giftsDesc: 'La vostra presenza al matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.',
+      revealDetails: 'Mostra dettagli',
+      copied: 'Copiato!',
       form: {
         familyName: 'Nome della famiglia',
         familyNamePlaceholder: 'ad esempio Schenk/Midolo',
@@ -139,6 +146,35 @@ const getInitialLang = (): Lang => {
     if (browserLang.startsWith('it')) return 'it';
   }
   return 'en';
+};
+
+const CopyButton = ({ text, t }: { text: string, t: any }) => {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button onClick={handleCopy} className="ml-3 p-2 text-zinc-400 hover:text-amber-200 transition-colors" title={copied ? t.rsvp.copied : "Copy"}>
+      {copied ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+    </button>
+  );
+};
+
+const RotateOnClick = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
+  const [rotation, setRotation] = useState(0);
+  return (
+    <motion.div
+      className={className}
+      onClick={() => setRotation(r => r + 360)}
+      animate={{ rotateY: rotation }}
+      transition={{ duration: 1.2, ease: "easeInOut" }}
+      style={{ transformStyle: "preserve-3d", cursor: "pointer" }}
+    >
+      {children}
+    </motion.div>
+  );
 };
 
 const SummaryItem = ({ children, showDot = true }: { children: React.ReactNode, showDot?: boolean, key?: React.Key }) => (
@@ -695,7 +731,12 @@ const FairyLights = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-screen h-[100lvh] overflow-hidden pointer-events-none z-[120]">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 3, delay: 3.5 }}
+      className="fixed top-0 left-0 w-screen h-[100lvh] overflow-hidden pointer-events-none z-0"
+    >
       {lights.map((light) => (
         <motion.div
           key={light.id}
@@ -719,17 +760,54 @@ const FairyLights = () => {
           }}
         />
       ))}
+    </motion.div>
+  );
+};
+
+const BurstAnimation = ({ delay }: { delay: number }) => {
+  const [sparkles, setSparkles] = useState<any[]>([]);
+  
+  useEffect(() => {
+    setSparkles(Array.from({ length: 80 }).map((_, i) => {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 50 + 20; // distance in vmin
+      return {
+        id: `burst-${i}`,
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
+        scale: Math.random() * 0.8 + 0.4,
+        delay: delay + Math.random() * 0.8
+      };
+    }));
+  }, [delay]);
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+      {sparkles.map((sparkle) => (
+        <motion.div
+          key={sparkle.id}
+          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+          animate={{ 
+            opacity: [0, 1, 0], 
+            scale: [0, sparkle.scale, 0],
+            x: `${sparkle.x}vmin`, 
+            y: `${sparkle.y}vmin` 
+          }}
+          transition={{ duration: 4.0, ease: "easeOut", delay: sparkle.delay }}
+          className="absolute w-2 h-2 bg-amber-200 rounded-full shadow-[0_0_15px_rgba(253,230,138,1)]"
+        />
+      ))}
     </div>
   );
 };
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isRSVPModalOpen, setIsRSVPModalOpen] = useState(false);
+  const [showBankDetails, setShowBankDetails] = useState(false);
 
   useEffect(() => {
     setLang(getInitialLang());
@@ -768,14 +846,17 @@ export default function App() {
   const t = translations[lang];
 
   return (
-    <div className="relative w-full">
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+    <div className="relative w-full bg-zinc-950">
       <div className="bg-noise" />
       <FairyLights />
 
-      {/* Header: Top Navigation & Language Switcher */}
-      <header className="absolute top-0 left-0 right-0 z-40 flex items-center justify-center p-6 sm:p-8 pointer-events-none">
-        <nav className="flex gap-4 sm:gap-8 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-400 pointer-events-auto">
+      <motion.header 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 5.0, duration: 1 }}
+        className="absolute top-0 left-0 right-0 z-40 flex items-center justify-center p-6 sm:p-8 pointer-events-none"
+      >
+        <nav className="flex gap-3 sm:gap-8 text-[10px] sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-zinc-400 pointer-events-auto">
           {sections.filter(s => s.id !== 'welcome').map(s => (
             <a key={s.id} href={`#${s.id}`} className="hover:text-amber-100 transition-colors">
               {t.nav[s.id as keyof typeof t.nav]}
@@ -821,7 +902,7 @@ export default function App() {
             </AnimatePresence>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Sticky Summary Header */}
       <div 
@@ -859,23 +940,45 @@ export default function App() {
 
       <main>
         {/* Welcome Section */}
-        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-20">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="text-center"
+        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-20 pb-20 sm:pb-32 z-10">
+          
+          {/* Couple Photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 1.5, delay: 1.0, ease: "easeOut" }}
+            className="z-20 mt-auto relative"
           >
-            <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-8 sm:mb-12">
+            <BurstAnimation delay={2.5} />
+            <RotateOnClick className="relative z-20 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto mb-8 sm:mb-10 rounded-full overflow-hidden border-2 border-amber-200/20 shadow-[0_0_40px_rgba(253,230,138,0.1)] bg-zinc-900">
+              <img 
+                src={coupleImg} 
+                alt="Katharina & Federico" 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=800&auto=format&fit=crop";
+                }}
+              />
+            </RotateOnClick>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 4.5, ease: "easeOut" }}
+            className="text-center w-full z-20 mb-auto"
+          >
+            <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
               {t.welcome.subtitle}
             </h2>
-            <h1 className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 tracking-tight leading-none">
-              Katharina <br className="md:hidden" />
-              <span className="text-amber-200/40 italic mx-4 text-5xl sm:text-7xl md:text-8xl">&</span> <br className="md:hidden" />
-              Federico
-            </h1>
-            <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300">
+
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-6 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2">
+              <div className="text-right text-4xl sm:text-6xl md:text-7xl font-serif font-light tracking-tight break-words">Katharina</div>
+              <div className="text-center text-amber-200/40 italic text-3xl sm:text-5xl md:text-6xl font-serif px-2">&</div>
+              <div className="text-left text-4xl sm:text-6xl md:text-7xl font-serif font-light tracking-tight break-words">Federico</div>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-8 sm:mb-12">
               <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
               <span className="tracking-wide">{t.welcome.date}</span>
             </div>
@@ -1012,15 +1115,69 @@ export default function App() {
             >
               {t.rsvp.btn}
             </button>
+          </motion.div>
+        </section>
 
-            <div className="max-w-xl mx-auto border-t border-white/10 pt-12 sm:pt-16">
-              <h3 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
-                {t.rsvp.giftsTitle}
-              </h3>
-              <p className="text-zinc-400 font-serif text-base sm:text-lg md:text-xl leading-relaxed">
-                {t.rsvp.giftsDesc}
-              </p>
-            </div>
+        {/* Gifts Section */}
+        <section id="gifts" className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20 z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="text-center max-w-2xl w-full"
+          >
+            <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-amber-200/40 mx-auto mb-8 sm:mb-10" />
+            <h2 className="text-5xl sm:text-7xl md:text-8xl font-serif font-light mb-6 sm:mb-8 text-zinc-100">
+              {t.rsvp.giftsTitle}
+            </h2>
+            <p className="text-zinc-400 mb-10 sm:mb-14 font-serif text-xl sm:text-2xl md:text-3xl max-w-md mx-auto leading-relaxed">
+              {t.rsvp.giftsDesc}
+            </p>
+            
+            {!showBankDetails ? (
+              <button 
+                onClick={() => setShowBankDetails(true)}
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300"
+              >
+                {t.rsvp.revealDetails}
+              </button>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="bg-zinc-950/50 rounded-2xl p-6 text-left border border-white/5 space-y-3 max-w-md mx-auto overflow-hidden"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 text-sm uppercase tracking-wider">IBAN</span>
+                  <div className="flex items-center">
+                    <span className="text-zinc-200 font-mono text-sm sm:text-base">GB45 REVO 0099 7012 249 61</span>
+                    <CopyButton text="GB45 REVO 0099 7012 249 61" t={t} />
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 text-sm uppercase tracking-wider">BIC</span>
+                  <div className="flex items-center">
+                    <span className="text-zinc-200 font-mono text-sm sm:text-base">REVOGB21</span>
+                    <CopyButton text="REVOGB21" t={t} />
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 border-b border-white/5 pb-3">
+                  <span className="text-zinc-500 text-sm uppercase tracking-wider">{lang === 'it' ? 'Beneficiario' : lang === 'de' ? 'Begünstigter' : 'Beneficiary'}</span>
+                  <div className="flex items-center">
+                    <span className="text-zinc-200 text-sm sm:text-base">Federico Midolo</span>
+                    <CopyButton text="Federico Midolo" t={t} />
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
+                  <span className="text-zinc-500 text-sm uppercase tracking-wider">{lang === 'it' ? 'Banca' : lang === 'de' ? 'Bank' : 'Bank name'}</span>
+                  <div className="flex items-center">
+                    <span className="text-zinc-200 text-sm sm:text-base">Revolut</span>
+                    <CopyButton text="Revolut" t={t} />
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </motion.div>
         </section>
       </main>
