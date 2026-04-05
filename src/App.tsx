@@ -972,7 +972,7 @@ export default function App() {
               {t.welcome.subtitle}
             </h2>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-6 gap-y-2 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2 text-5xl sm:text-7xl md:text-8xl font-serif font-light tracking-tight text-zinc-100">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-x-4 sm:gap-x-6 gap-y-2 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2 text-5xl sm:text-7xl md:text-8xl font-serif font-light tracking-tight text-zinc-100">
               <span className="text-center">Katharina</span>
               <span className="text-amber-200/40 italic text-4xl sm:text-6xl md:text-7xl px-1">&</span>
               <span className="text-center">Federico</span>
@@ -1014,7 +1014,7 @@ export default function App() {
               <span className="text-zinc-400 group-hover:text-amber-200/60 transition-colors underline underline-offset-8 decoration-white/20 group-hover:decoration-amber-200/40">Palazzo Vermexio, Siracusa</span>
             </a>
             
-            <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-fit mx-auto text-left">
+            <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-full max-w-sm mx-auto text-left px-4">
               <div className="flex items-start gap-3">
                 <Shirt className="w-5 h-5 text-amber-200/60 shrink-0 mt-0.5" />
                 <p><strong className="text-zinc-200 font-medium">{t.ceremony.dressCodeLabel}:</strong> {t.ceremony.dressCodeInfo}</p>
@@ -1070,7 +1070,7 @@ export default function App() {
               <span className="text-zinc-400 group-hover:text-amber-200/60 transition-colors underline underline-offset-8 decoration-white/20 group-hover:decoration-amber-200/40">Palazzolo Acreide</span>
             </a>
 
-            <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-fit mx-auto text-left">
+            <div className="flex flex-col gap-4 mb-10 sm:mb-14 text-zinc-400 text-sm sm:text-base font-serif w-full max-w-sm mx-auto text-left px-4">
               <div className="flex items-start gap-3">
                 <Shirt className="w-5 h-5 text-amber-200/60 shrink-0 mt-0.5" />
                 <p><strong className="text-zinc-200 font-medium">{t.reception.dressCodeLabel}:</strong> {t.reception.dressCodeInfo}</p>
