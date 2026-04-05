@@ -625,8 +625,8 @@ const downloadICS = (event: 'ceremony' | 'reception') => {
     title = 'Wedding Ceremony - Katharina & Federico';
     description = 'Wedding Ceremony at Salone Borsellino, Palazzo Vermexio. Map: https://maps.app.goo.gl/FM1xH1HefZ9yHUss7';
     location = 'Palazzo del Vermexio, Piazza Duomo, 4, 96100 Siracusa SR, Italy';
-    startUTC = '20260919T131500Z'; // 15:15 CEST
-    endUTC = '20260919T141500Z'; // 16:15 CEST
+    startUTC = '20260919T130000Z'; // 15:00 CEST
+    endUTC = '20260919T140000Z'; // 16:00 CEST
   } else {
     title = 'Wedding Reception - Katharina & Federico';
     description = 'Wedding Reception at Ristorante La Trota. Map: https://maps.app.goo.gl/szDuGBAqywC3kCAe9';
@@ -661,8 +661,8 @@ const Countdown = ({ t }: { t: any }) => {
   const [isOver, setIsOver] = useState(false);
 
   useEffect(() => {
-    // 19th September 2026 15:15 CEST (UTC+2) -> 13:15 UTC
-    const targetDate = new Date('2026-09-19T13:15:00Z').getTime();
+    // 19th September 2026 15:00 CEST (UTC+2) -> 13:00 UTC
+    const targetDate = new Date('2026-09-19T13:00:00Z').getTime();
 
     const calculateTime = () => {
       const now = new Date().getTime();
@@ -926,7 +926,7 @@ export default function App() {
             )}
             {activeSectionIndex >= 2 && (
               <SummaryItem key="ceremony">
-                15:15 {t.nav.ceremony}
+                15:00 {t.nav.ceremony}
               </SummaryItem>
             )}
             {activeSectionIndex >= 3 && (
@@ -999,7 +999,7 @@ export default function App() {
               {t.ceremony.title}
             </h2>
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
-              15:15
+              15:00
             </div>
             <a 
               href="https://maps.app.goo.gl/FM1xH1HefZ9yHUss7"
