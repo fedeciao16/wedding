@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User } from 'lucide-react';
 
 type Lang = 'en' | 'de' | 'it';
 
@@ -10,7 +10,38 @@ const translations = {
     welcome: { subtitle: 'We are getting married', date: '19th September 2026', dateShort: '19th Sept 2026', dateNumeric: '19.09.26' },
     ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal', parkingLabel: 'Parking', parkingOr: 'or' },
     reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal, but bring something warm as Palazzolo Acreide gets cool at night.', parkingLabel: 'Parking', parkingInfo: 'Free on-site parking' },
-    rsvp: { title: 'Join Us', desc: 'Please let us know if you can make it to our special day.', btn: 'RSVP Now', giftsTitle: 'Wedding Gifts', giftsDesc: 'Your presence at our wedding is the greatest gift we could ask for! If you would still like to gift us something, then a contribution toward our honeymoon and start into our joint life together would be sincerely appreciated.' },
+    rsvp: { 
+      title: 'Join Us', 
+      desc: 'Please let us know if you can make it to our special day.', 
+      btn: 'RSVP Now', 
+      giftsTitle: 'Wedding Gifts', 
+      giftsDesc: 'Your presence at our wedding is the greatest gift we could ask for! If you would still like to gift us something, then a contribution toward our honeymoon and start into our joint life together would be sincerely appreciated.',
+      form: {
+        familyName: 'Family Name',
+        familyNamePlaceholder: 'e.g. Schenk/Midolo',
+        ceremony: 'Will you attend the ceremony?',
+        reception: 'Will you attend the reception?',
+        yes: 'Yes',
+        no: 'No',
+        guestTitle: 'Guest {{n}}',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        menu: 'Menu Preference',
+        menuFish: 'Fish Menu',
+        menuMeat: 'Meat Alternative',
+        menuChild: 'Children\'s Menu',
+        allergies: 'Allergies or Intolerances',
+        addGuest: 'Add another guest',
+        removeGuest: 'Remove guest',
+        next: 'Next',
+        back: 'Back',
+        submit: 'Submit RSVP',
+        success: 'Thank you very much for letting us know!',
+        successSub: 'Your response has been recorded.',
+        error: 'Something went wrong. Please try again.',
+        oneFormPerFamily: 'Please fill out one form per family.'
+      }
+    },
     countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs' }
   },
   de: {
@@ -18,15 +49,77 @@ const translations = {
     welcome: { subtitle: 'Wir heiraten', date: '19. September 2026', dateShort: '19. Sept 2026', dateNumeric: '19.09.26' },
     ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich', parkingLabel: 'Parken', parkingOr: 'oder' },
     reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird.', parkingLabel: 'Parken', parkingInfo: 'Kostenlose Parkplätze vor Ort' },
-    rsvp: { title: 'Feiert mit uns', desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', btn: 'Jetzt zusagen', giftsTitle: 'Geschenke', giftsDesc: 'Eure Anwesenheit auf unserer Hochzeit ist das größte Geschenk, das wir uns wünschen können! Solltet ihr uns dennoch etwas schenken wollen, würden wir uns über einen Beitrag zu unseren Flitterwochen und unserem gemeinsamen Start ins Eheleben sehr freuen.' },
+    rsvp: { 
+      title: 'Feiert mit uns', 
+      desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', 
+      btn: 'Jetzt zusagen', 
+      giftsTitle: 'Geschenke', 
+      giftsDesc: 'Eure Anwesenheit auf unserer Hochzeit ist das größte Geschenk, das wir uns wünschen können! Solltet ihr uns dennoch etwas schenken wollen, würden wir uns über einen Beitrag zu unseren Flitterwochen und unserem gemeinsamen Start ins Eheleben sehr freuen.',
+      form: {
+        familyName: 'Familienname',
+        familyNamePlaceholder: 'z.B. Schenk/Midolo',
+        ceremony: 'Teilnahme an der Trauung?',
+        reception: 'Teilnahme an der Feier?',
+        yes: 'Ja',
+        no: 'Nein',
+        guestTitle: 'Gast {{n}}',
+        firstName: 'Vorname',
+        lastName: 'Nachname',
+        menu: 'Menüpräferenz',
+        menuFish: 'Fischmenü',
+        menuMeat: 'Fleischalternative',
+        menuChild: 'Kindermenü',
+        allergies: 'Allergien oder Lebensmittelunverträglichkeiten',
+        addGuest: 'Weiteren Gast hinzufügen',
+        removeGuest: 'Gast entfernen',
+        next: 'Weiter',
+        back: 'Zurück',
+        submit: 'Zusage absenden',
+        success: 'Vielen Dank für eure Rückmeldung!',
+        successSub: 'Eure Antwort wurde gespeichert.',
+        error: 'Etwas ist schief gelaufen. Bitte versuche es erneut.',
+        oneFormPerFamily: 'Bitte ein Formular pro Familie ausfüllen.'
+      }
+    },
     countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek' }
   },
   it: {
-    nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'RSVP' },
+    nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'Conferma' },
     welcome: { subtitle: 'Ci sposiamo', date: '19 Settembre 2026', dateShort: '19 Sett 2026', dateNumeric: '19.09.26' },
     ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale', parkingLabel: 'Parcheggio', parkingOr: 'o' },
     reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parkingLabel: 'Parcheggio', parkingInfo: 'Gratuito in loco' },
-    rsvp: { title: 'Unisciti a noi', desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', btn: 'Conferma ora', giftsTitle: 'Regali di Nozze', giftsDesc: 'La vostra presenza al nostro matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.' },
+    rsvp: { 
+      title: 'Unisciti a noi', 
+      desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', 
+      btn: 'Conferma ora', 
+      giftsTitle: 'Regali di Nozze', 
+      giftsDesc: 'La vostra presenza al matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.',
+      form: {
+        familyName: 'Nome della famiglia',
+        familyNamePlaceholder: 'ad esempio Schenk/Midolo',
+        ceremony: 'Parteciperete alla cerimonia?',
+        reception: 'Parteciperete al ricevimento?',
+        yes: 'Sì',
+        no: 'No',
+        guestTitle: 'Ospite {{n}}',
+        firstName: 'Vorname',
+        lastName: 'Cognome',
+        menu: 'Preferenza menù',
+        menuFish: 'Menu di pesce',
+        menuMeat: 'Alternativa di carne',
+        menuChild: 'Menu per bambini',
+        allergies: 'Allergie o intolleranze alimentari',
+        addGuest: 'Aggiungere un altro ospite',
+        removeGuest: 'Rimuovi ospite',
+        next: 'Avanti',
+        back: 'Indietro',
+        submit: 'Invia conferma',
+        success: 'Grazie mille per avercelo fatto sapere!',
+        successSub: 'La vostra risposta è stata registrata.',
+        error: 'Qualcosa è andato storto. Per favore riprova.',
+        oneFormPerFamily: 'Compilare un modulo per famiglia per favore.'
+      }
+    },
     countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec' }
   }
 };
@@ -59,6 +152,434 @@ const SummaryItem = ({ children, showDot = true }: { children: React.ReactNode, 
     <span>{children}</span>
   </motion.div>
 );
+
+const ENTRY_IDS = {
+  familyName: 'entry.44399872',
+  ceremony: 'entry.493036937',
+  reception: 'entry.1536182294',
+  guests: [
+    { firstName: 'entry.873285286', lastName: 'entry.68954905', menu: 'entry.56052562', allergies: 'entry.7359624', addAnother: 'entry.1883133536' },
+    { firstName: 'entry.1728709375', lastName: 'entry.1436763885', menu: 'entry.777587009', allergies: 'entry.148975984', addAnother: 'entry.1707085550' },
+    { firstName: 'entry.1661057067', lastName: 'entry.216828863', menu: 'entry.1119623677', allergies: 'entry.1747123524', addAnother: 'entry.1632607731' },
+    { firstName: 'entry.1948607450', lastName: 'entry.1805637810', menu: 'entry.475243490', allergies: 'entry.250674452', addAnother: 'entry.51474314' },
+    { firstName: 'entry.1484714026', lastName: 'entry.903536142', menu: 'entry.554775842', allergies: 'entry.863671942', addAnother: 'entry.1257320432' },
+    { firstName: 'entry.1867500885', lastName: 'entry.699296044', menu: 'entry.1978884413', allergies: 'entry.1774313050', addAnother: 'entry.2029054108' },
+    { firstName: 'entry.597057835', lastName: 'entry.1422554480', menu: 'entry.636134820', allergies: 'entry.2112936650', addAnother: 'entry.64972178' },
+    { firstName: 'entry.10936418', lastName: 'entry.88822188', menu: 'entry.108785113', allergies: 'entry.1038949119', addAnother: 'entry.1178997103' },
+    { firstName: 'entry.650804760', lastName: 'entry.393313103', menu: 'entry.334562974', allergies: 'entry.1401946989', addAnother: 'entry.835758670' },
+    { firstName: 'entry.1957369302', lastName: 'entry.499329917', menu: 'entry.494731702', allergies: 'entry.1462187285', addAnother: '' }
+  ]
+};
+
+const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => void, t: any }) => {
+  const [step, setStep] = useState(0);
+  const [familyName, setFamilyName] = useState('');
+  const [ceremony, setCeremony] = useState<boolean | null>(null);
+  const [reception, setReception] = useState<boolean | null>(null);
+  const [guests, setGuests] = useState([{ firstName: '', lastName: '', menu: '', allergies: '' }]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+      // Reset form when closed
+      setTimeout(() => {
+        setStep(0);
+        setFamilyName('');
+        setCeremony(null);
+        setReception(null);
+        setGuests([{ firstName: '', lastName: '', menu: '', allergies: '' }]);
+        setIsSuccess(false);
+      }, 300);
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isOpen]);
+
+  const handleAddGuest = () => {
+    if (guests.length < 10) {
+      setGuests([...guests, { firstName: '', lastName: '', menu: '', allergies: '' }]);
+    }
+  };
+
+  const handleRemoveGuest = (index: number) => {
+    if (guests.length > 1) {
+      const newGuests = [...guests];
+      newGuests.splice(index, 1);
+      setGuests(newGuests);
+    }
+  };
+
+  const updateGuest = (index: number, field: string, value: string) => {
+    const newGuests = [...guests];
+    (newGuests[index] as any)[field] = value;
+    setGuests(newGuests);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSeQDie7Kp1wwK2CbpsYXtUii9IjaKgHKb-DCS-_FrAc3l65Qw/formResponse';
+    
+    const params = new URLSearchParams();
+    params.append(ENTRY_IDS.familyName, familyName);
+    params.append(ENTRY_IDS.ceremony, ceremony ? 'Ja / Sì' : 'Nein / No');
+    params.append(ENTRY_IDS.reception, reception ? 'Ja / Sì' : 'Nein / No');
+
+    if (reception === false) {
+      params.append('pageHistory', '0');
+    } else {
+      const history = Array.from({ length: guests.length + 1 }, (_, i) => i).join(',');
+      params.append('pageHistory', history);
+
+      guests.forEach((guest, index) => {
+        const ids = ENTRY_IDS.guests[index];
+        params.append(ids.firstName, guest.firstName);
+        params.append(ids.lastName, guest.lastName);
+        
+        let menuValue = '';
+        if (guest.menu === 'fish') menuValue = 'Fischmenü / Menu di pesce';
+        else if (guest.menu === 'meat') menuValue = 'Fleischalternative / Alternativa di carne';
+        else if (guest.menu === 'child') menuValue = 'Kindermenü / Menu per bambini';
+        
+        params.append(ids.menu, menuValue);
+        params.append(ids.allergies, guest.allergies);
+        
+        if (ids.addAnother) {
+          params.append(ids.addAnother, index < guests.length - 1 ? 'Ja / Sì' : 'Nein / No');
+        }
+      });
+    }
+
+    try {
+      const iframe = document.createElement('iframe');
+      iframe.name = 'hidden_iframe';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const form = document.createElement('form');
+      form.action = formUrl;
+      form.method = 'POST';
+      form.target = 'hidden_iframe';
+
+      params.forEach((value, key) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(() => {
+        document.body.removeChild(form);
+        document.body.removeChild(iframe);
+        setIsSuccess(true);
+        setIsSubmitting(false);
+      }, 1000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setIsSubmitting(false);
+      alert(t.rsvp.form.error);
+    }
+  };
+
+  const isStepValid = () => {
+    if (step === 0) return familyName.trim() !== '' && ceremony !== null && reception !== null;
+    return guests.every(g => g.firstName.trim() !== '' && g.lastName.trim() !== '' && g.menu !== '');
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-transparent"
+          />
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
+              <div>
+                <h3 className="text-xl font-serif text-zinc-100">{t.rsvp.title}</h3>
+                <p className="text-xs text-zinc-400 uppercase tracking-widest mt-1">{t.rsvp.form.oneFormPerFamily}</p>
+              </div>
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-white/5 rounded-full transition-colors text-zinc-400 hover:text-zinc-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+              {isSuccess ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="h-full flex flex-col items-center justify-center text-center py-12"
+                >
+                  <div className="w-20 h-20 bg-amber-200/20 rounded-full flex items-center justify-center mb-6">
+                    <Check className="w-10 h-10 text-amber-200" />
+                  </div>
+                  <h4 className="text-2xl font-serif text-zinc-100 mb-2">{t.rsvp.form.success}</h4>
+                  <p className="text-zinc-300 max-w-xs mx-auto">{t.rsvp.form.successSub}</p>
+                  <button 
+                    onClick={onClose}
+                    className="mt-8 px-8 py-3 bg-white text-zinc-950 rounded-full font-medium hover:bg-zinc-200 transition-colors"
+                  >
+                    Close
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  {step === 0 ? (
+                    <motion.div 
+                      key="step0"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-300 flex items-center gap-2">
+                          <User className="w-4 h-4 text-amber-200/80" />
+                          {t.rsvp.form.familyName}
+                        </label>
+                        <input 
+                          type="text"
+                          value={familyName}
+                          onChange={(e) => setFamilyName(e.target.value)}
+                          placeholder={t.rsvp.form.familyNamePlaceholder}
+                          className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-amber-200/50 transition-colors"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-4">
+                        <p className="text-sm font-medium text-zinc-300">{t.rsvp.form.ceremony}</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setCeremony(true)}
+                            className={`py-3 rounded-xl border transition-all ${ceremony === true ? 'bg-amber-200/10 border-amber-200/50 text-amber-200' : 'bg-zinc-800 border-white/10 text-zinc-400 hover:border-white/20'}`}
+                          >
+                            {t.rsvp.form.yes}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCeremony(false)}
+                            className={`py-3 rounded-xl border transition-all ${ceremony === false ? 'bg-amber-200/10 border-amber-200/50 text-amber-200' : 'bg-zinc-800 border-white/10 text-zinc-400 hover:border-white/20'}`}
+                          >
+                            {t.rsvp.form.no}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <p className="text-sm font-medium text-zinc-300">{t.rsvp.form.reception}</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setReception(true)}
+                            className={`py-3 rounded-xl border transition-all ${reception === true ? 'bg-amber-200/10 border-amber-200/50 text-amber-200' : 'bg-zinc-800 border-white/10 text-zinc-400 hover:border-white/20'}`}
+                          >
+                            {t.rsvp.form.yes}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setReception(false)}
+                            className={`py-3 rounded-xl border transition-all ${reception === false ? 'bg-amber-200/10 border-amber-200/50 text-amber-200' : 'bg-zinc-800 border-white/10 text-zinc-400 hover:border-white/20'}`}
+                          >
+                            {t.rsvp.form.no}
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="step1"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-10"
+                    >
+                      {guests.map((guest, index) => (
+                        <div key={index} className="space-y-6 relative">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-amber-200 font-serif text-lg">
+                              {t.rsvp.form.guestTitle.replace('{{n}}', (index + 1).toString())}
+                            </h4>
+                            {guests.length > 1 && (
+                              <button 
+                                type="button"
+                                onClick={() => handleRemoveGuest(index)}
+                                className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{t.rsvp.form.firstName}</label>
+                              <input 
+                                type="text"
+                                value={guest.firstName}
+                                onChange={(e) => updateGuest(index, 'firstName', e.target.value)}
+                                className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-2 text-zinc-100 focus:outline-none focus:border-amber-200/50 transition-colors"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{t.rsvp.form.lastName}</label>
+                              <input 
+                                type="text"
+                                value={guest.lastName}
+                                onChange={(e) => updateGuest(index, 'lastName', e.target.value)}
+                                className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-2 text-zinc-100 focus:outline-none focus:border-amber-200/50 transition-colors"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                              <Utensils className="w-3 h-3 text-amber-200/80" />
+                              {t.rsvp.form.menu}
+                            </label>
+                            <div className="grid grid-cols-1 gap-2">
+                              {[
+                                { id: 'fish', label: t.rsvp.form.menuFish },
+                                { id: 'meat', label: t.rsvp.form.menuMeat },
+                                { id: 'child', label: t.rsvp.form.menuChild }
+                              ].map((option) => (
+                                <button
+                                  key={option.id}
+                                  type="button"
+                                  onClick={() => updateGuest(index, 'menu', option.id)}
+                                  className={`px-4 py-2.5 rounded-xl border text-sm text-left transition-all ${guest.menu === option.id ? 'bg-amber-200/10 border-amber-200/50 text-amber-200' : 'bg-zinc-800 border-white/10 text-zinc-400 hover:border-white/20'}`}
+                                >
+                                  {option.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                              <AlertCircle className="w-3 h-3 text-amber-200/80" />
+                              {t.rsvp.form.allergies}
+                            </label>
+                            <textarea 
+                              value={guest.allergies}
+                              onChange={(e) => updateGuest(index, 'allergies', e.target.value)}
+                              rows={2}
+                              className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-2 text-zinc-100 focus:outline-none focus:border-amber-200/50 transition-colors resize-none"
+                            />
+                          </div>
+                          
+                          {index < guests.length - 1 && <div className="h-px bg-white/5 w-full mt-8" />}
+                        </div>
+                      ))}
+
+                      {guests.length < 10 && (
+                        <button
+                          type="button"
+                          onClick={handleAddGuest}
+                          className="w-full py-4 bg-zinc-800/50 border border-dashed border-white/10 rounded-2xl text-zinc-400 hover:text-amber-200/60 hover:border-amber-200/20 transition-all flex items-center justify-center gap-2 group"
+                        >
+                          <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                          {t.rsvp.form.addGuest}
+                        </button>
+                      )}
+                    </motion.div>
+                  )}
+                </form>
+              )}
+            </div>
+
+            {!isSuccess && (
+              <div className="p-6 border-t border-white/5 bg-zinc-950 shrink-0 flex gap-3">
+                {step > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(0)}
+                    className="px-6 py-3 border border-white/10 rounded-full text-zinc-400 hover:bg-zinc-800 transition-colors flex items-center gap-2"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    {t.rsvp.form.back}
+                  </button>
+                )}
+                
+                {step === 0 ? (
+                  reception === false ? (
+                    <button
+                      type="submit"
+                      disabled={!isStepValid() || isSubmitting}
+                      onClick={handleSubmit}
+                      className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <div className="w-5 h-5 border-2 border-amber-950/30 border-t-amber-950 rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          <Check className="w-4 h-4" />
+                          {t.rsvp.form.submit}
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={!isStepValid()}
+                      onClick={() => setStep(1)}
+                      className="flex-1 px-6 py-3 bg-white text-zinc-950 rounded-full font-medium hover:bg-zinc-200 transition-all disabled:opacity-50 disabled:hover:bg-white flex items-center justify-center gap-2"
+                    >
+                      {t.rsvp.form.next}
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  )
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={!isStepValid() || isSubmitting}
+                    onClick={handleSubmit}
+                    className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-amber-950/30 border-t-amber-950 rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <Check className="w-4 h-4" />
+                        {t.rsvp.form.submit}
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 const downloadICS = (event: 'ceremony' | 'reception') => {
   let title, description, location, startUTC, endUTC;
@@ -173,7 +694,7 @@ const FairyLights = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-screen h-[100lvh] overflow-hidden pointer-events-none z-10">
+    <div className="fixed top-0 left-0 w-screen h-[100lvh] overflow-hidden pointer-events-none z-[120]">
       {lights.map((light) => (
         <motion.div
           key={light.id}
@@ -206,6 +727,7 @@ export default function App() {
   const [lang, setLang] = useState<Lang>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isRSVPModalOpen, setIsRSVPModalOpen] = useState(false);
 
   useEffect(() => {
     setLang(getInitialLang());
@@ -482,7 +1004,7 @@ export default function App() {
               {t.rsvp.desc}
             </p>
             <button 
-              onClick={() => setToastMessage('Coming soon!')}
+              onClick={() => setIsRSVPModalOpen(true)}
               className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] font-medium w-full sm:w-auto mb-16 sm:mb-20"
             >
               {t.rsvp.btn}
@@ -513,6 +1035,13 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* RSVP Modal */}
+      <RSVPModal 
+        isOpen={isRSVPModalOpen} 
+        onClose={() => setIsRSVPModalOpen(false)} 
+        t={t} 
+      />
     </div>
   );
 }
