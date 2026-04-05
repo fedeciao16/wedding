@@ -348,7 +348,7 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85dvh]"
           >
             <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
               <div>
@@ -735,7 +735,7 @@ const FairyLights = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 3, delay: 3.5 }}
-      className="fixed top-0 left-0 w-screen h-[100lvh] overflow-hidden pointer-events-none z-0"
+      className="fixed inset-0 w-full h-[100lvh] overflow-hidden pointer-events-none z-0"
     >
       {lights.map((light) => (
         <motion.div
@@ -846,7 +846,7 @@ export default function App() {
   const t = translations[lang];
 
   return (
-    <div className="relative w-full bg-zinc-950">
+    <div className="relative w-full bg-zinc-950 overflow-x-hidden">
       <div className="bg-noise" />
       <FairyLights />
 
@@ -906,7 +906,7 @@ export default function App() {
 
       {/* Sticky Summary Header */}
       <div 
-        className={`fixed top-0 left-0 right-0 z-30 flex flex-col items-center justify-center p-4 sm:p-5 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 transition-all duration-700 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 z-30 flex flex-col items-center justify-center p-4 sm:p-5 bg-[#050505]/30 backdrop-blur-md border-b border-white/5 transition-all duration-700 ease-in-out ${
           activeSectionIndex > 0 ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
         }`}
       >
