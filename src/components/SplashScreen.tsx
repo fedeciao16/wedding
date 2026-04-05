@@ -78,7 +78,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             className="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-amber-200/30 shadow-[0_0_60px_rgba(253,230,138,0.15)]"
           >
             <img 
-              src="/couple.jpg" 
+              src="/couple.png" 
               alt="The Couple" 
               className="w-full h-full object-cover"
               onError={(e) => {
