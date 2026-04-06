@@ -95,10 +95,10 @@ const translations = {
     ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale', parkingLabel: 'Parcheggio', parkingOr: 'o' },
     reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parkingLabel: 'Parcheggio', parkingInfo: 'Gratuito in loco' },
     rsvp: { 
-      title: 'Unisciti a noi', 
+      title: 'Unitevi a noi', 
       desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', 
       btn: 'Conferma ora', 
-      giftsTitle: 'Una nota sui Regali', 
+      giftsTitle: 'Un appunto sui Regali', 
       giftsDesc: 'La vostra presenza al matrimonio è il regalo più grande che potessimo desiderare! Se desiderate comunque farci un regalo, un contributo per la nostra luna di miele e per l\'inizio della nostra vita insieme sarà sinceramente apprezzato.',
       revealDetails: 'Mostra dettagli',
       copied: 'Copiato!',
