@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete } from 'lucide-react';
 import { SplashScreen } from './components/SplashScreen';
 import coupleImg from './assets/couple.jpg';
 
@@ -734,7 +734,7 @@ const FairyLights = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 3, delay: 1.5 }}
+      transition={{ duration: 3, delay: 2.5 }}
       className="fixed inset-0 w-full h-[100lvh] overflow-hidden pointer-events-none z-0"
     >
       {lights.map((light) => (
@@ -768,7 +768,7 @@ const BurstAnimation = ({ delay }: { delay: number }) => {
   const [sparkles, setSparkles] = useState<any[]>([]);
   
   useEffect(() => {
-    setSparkles(Array.from({ length: 80 }).map((_, i) => {
+    setSparkles(Array.from({ length: 40 }).map((_, i) => {
       const angle = Math.random() * Math.PI * 2;
       const distance = Math.random() * 50 + 20; // distance in vmin
       return {
@@ -783,18 +783,25 @@ const BurstAnimation = ({ delay }: { delay: number }) => {
 
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+      <style>{`
+        @keyframes burst-sparkle {
+          0% { transform: translate(0, 0) scale(0); opacity: 0; }
+          10% { opacity: 1; }
+          100% { transform: translate(var(--tx), var(--ty)) scale(var(--s)); opacity: 0; }
+        }
+      `}</style>
       {sparkles.map((sparkle) => (
-        <motion.div
+        <div
           key={sparkle.id}
-          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-          animate={{ 
-            opacity: [0, 1, 0], 
-            scale: [0, sparkle.scale, 0],
-            x: `${sparkle.x}vmin`, 
-            y: `${sparkle.y}vmin` 
-          }}
-          transition={{ duration: 4.0, ease: "easeOut", delay: sparkle.delay }}
           className="absolute w-2 h-2 bg-amber-200 rounded-full shadow-[0_0_15px_rgba(253,230,138,1)]"
+          style={{
+            '--tx': `${sparkle.x}vmin`,
+            '--ty': `${sparkle.y}vmin`,
+            '--s': sparkle.scale,
+            animation: `burst-sparkle 3s ease-out ${sparkle.delay}s forwards`,
+            opacity: 0,
+            willChange: 'transform, opacity'
+          } as any}
         />
       ))}
     </div>
@@ -857,7 +864,7 @@ export default function App() {
         <motion.header 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 3.0, duration: 1 }}
+          transition={{ delay: 4.0, duration: 1 }}
           className="absolute top-0 left-0 right-0 z-40 flex items-center justify-center p-6 sm:p-8 pointer-events-none"
         >
         <nav className="flex gap-3 sm:gap-8 text-[10px] sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-zinc-400 pointer-events-auto">
@@ -956,7 +963,7 @@ export default function App() {
             transition={{ duration: 1.5, delay: 1.0, ease: "easeOut" }}
             className="z-20 mt-auto relative"
           >
-            {isUnlocked && <BurstAnimation delay={0.2} />}
+            {isUnlocked && <BurstAnimation delay={0.5} />}
             <RotateOnClick className="relative z-20 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto mb-8 sm:mb-10 rounded-full overflow-hidden border-2 border-amber-200/20 shadow-[0_0_40px_rgba(253,230,138,0.1)] bg-zinc-900">
               <img 
                 src={coupleImg} 
@@ -975,62 +982,116 @@ export default function App() {
                 <motion.div
                   key="password-input"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.8, delay: 2.0, ease: "easeOut" }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.8, delay: 2.0, ease: "easeOut" } }}
+                  exit={{ opacity: 0, y: -20, transition: { duration: 0.4, delay: 0, ease: "easeIn" } }}
                   className="text-center w-full max-w-xs z-30 col-start-1 row-start-1"
                 >
-                <form 
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    // Basic hashing check using Web Crypto API
-                    try {
-                      const encoder = new TextEncoder();
-                      const data = encoder.encode(password);
-                      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                      const hashArray = Array.from(new Uint8Array(hashBuffer));
-                      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                      
-                      if (hashHex === '57367e207dbd56a32e08943ed1c736bf6b59e20819fef47d83faa7c16d9400ea') {
-                        setIsUnlocked(true);
-                        setShowPasswordError(false);
-                      } else {
-                        setShowPasswordError(true);
-                        setPassword('');
-                      }
-                    } catch (err) {
-                      // Fallback if crypto is not available
-                      if (password === '190926') {
-                        setIsUnlocked(true);
-                        setShowPasswordError(false);
-                      } else {
-                        setShowPasswordError(true);
-                        setPassword('');
-                      }
-                    }
-                  }}
-                  className="flex flex-col gap-4"
-                >
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setShowPasswordError(false);
-                    }}
-                    placeholder="Enter Password"
-                    className={`w-full px-6 py-4 bg-zinc-900/50 border ${showPasswordError ? 'border-red-500/50' : 'border-white/10'} rounded-full text-center text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-amber-200/50 transition-colors`}
-                  />
+                <div className="flex flex-col gap-6 items-center">
+                  {/* Password Dots */}
+                  <div className="flex gap-3 mb-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`w-3 h-3 rounded-full transition-colors duration-300 ${i < password.length ? 'bg-amber-200 shadow-[0_0_8px_rgba(253,230,138,0.8)]' : 'border border-amber-200/30 bg-transparent'}`}
+                      />
+                    ))}
+                  </div>
+
                   {showPasswordError && (
-                    <span className="text-red-400 text-sm">Incorrect password</span>
+                    <span className="text-red-400 text-sm absolute -top-6">Incorrect PIN</span>
                   )}
-                  <button
-                    type="submit"
-                    className="w-full px-8 py-4 bg-amber-200/10 hover:bg-amber-200/20 border border-amber-200/20 rounded-full text-amber-100 uppercase tracking-widest text-sm transition-all duration-300"
-                  >
-                    Enter
-                  </button>
-                </form>
+
+                  {/* Numpad */}
+                  <div className="grid grid-cols-3 gap-4 sm:gap-6">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                      <button
+                        key={num}
+                        onClick={async () => {
+                          if (password.length >= 6) return;
+                          const newPassword = password + num;
+                          setPassword(newPassword);
+                          setShowPasswordError(false);
+                          
+                          if (newPassword.length === 6) {
+                            try {
+                              const encoder = new TextEncoder();
+                              const data = encoder.encode(newPassword);
+                              const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                              const hashArray = Array.from(new Uint8Array(hashBuffer));
+                              const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                              
+                              if (hashHex === '57367e207dbd56a32e08943ed1c736bf6b59e20819fef47d83faa7c16d9400ea') {
+                                setIsUnlocked(true);
+                                setShowPasswordError(false);
+                              } else {
+                                setShowPasswordError(true);
+                                setPassword('');
+                              }
+                            } catch (err) {
+                              if (newPassword === '190926') {
+                                setIsUnlocked(true);
+                                setShowPasswordError(false);
+                              } else {
+                                setShowPasswordError(true);
+                                setPassword('');
+                              }
+                            }
+                          }
+                        }}
+                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/10 flex items-center justify-center text-2xl sm:text-3xl text-zinc-200 hover:bg-white/10 active:bg-white/20 transition-colors font-light"
+                      >
+                        {num}
+                      </button>
+                    ))}
+                    <div className="w-16 h-16 sm:w-20 sm:h-20" /> {/* Empty cell */}
+                    <button
+                      onClick={async () => {
+                        if (password.length >= 6) return;
+                        const newPassword = password + '0';
+                        setPassword(newPassword);
+                        setShowPasswordError(false);
+                        
+                        if (newPassword.length === 6) {
+                          try {
+                            const encoder = new TextEncoder();
+                            const data = encoder.encode(newPassword);
+                            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                            const hashArray = Array.from(new Uint8Array(hashBuffer));
+                            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                            
+                            if (hashHex === '57367e207dbd56a32e08943ed1c736bf6b59e20819fef47d83faa7c16d9400ea') {
+                              setIsUnlocked(true);
+                              setShowPasswordError(false);
+                            } else {
+                              setShowPasswordError(true);
+                              setPassword('');
+                            }
+                          } catch (err) {
+                            if (newPassword === '190926') {
+                              setIsUnlocked(true);
+                              setShowPasswordError(false);
+                            } else {
+                              setShowPasswordError(true);
+                              setPassword('');
+                            }
+                          }
+                        }
+                      }}
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/10 flex items-center justify-center text-2xl sm:text-3xl text-zinc-200 hover:bg-white/10 active:bg-white/20 transition-colors font-light"
+                    >
+                      0
+                    </button>
+                    <button
+                      onClick={() => {
+                        setPassword(p => p.slice(0, -1));
+                        setShowPasswordError(false);
+                      }}
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-white/5 active:bg-white/10 transition-colors"
+                    >
+                      <Delete className="w-6 h-6 sm:w-8 sm:h-8" />
+                    </button>
+                  </div>
+                </div>
               </motion.div>
               )}
             </AnimatePresence>
@@ -1039,7 +1100,7 @@ export default function App() {
               key="welcome-content"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isUnlocked ? 1 : 0, y: isUnlocked ? 0 : 20 }}
-              transition={{ duration: 1.2, delay: isUnlocked ? 1.5 : 0, ease: "easeOut" }}
+              transition={{ duration: 1.2, delay: isUnlocked ? 4.0 : 0, ease: "easeOut" }}
               className={`text-center w-full z-20 col-start-1 row-start-1 ${!isUnlocked ? 'pointer-events-none' : ''}`}
             >
                 <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
