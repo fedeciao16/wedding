@@ -969,16 +969,17 @@ export default function App() {
             </RotateOnClick>
           </motion.div>
 
-          <AnimatePresence mode="wait">
-            {!isUnlocked ? (
-              <motion.div
-                key="password-input"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.8, delay: 2.0, ease: "easeOut" }}
-                className="text-center w-full max-w-xs z-20 mb-auto"
-              >
+          <div className="w-full grid mb-auto place-items-center">
+            <AnimatePresence>
+              {!isUnlocked && (
+                <motion.div
+                  key="password-input"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.8, delay: 2.0, ease: "easeOut" }}
+                  className="text-center w-full max-w-xs z-30 col-start-1 row-start-1"
+                >
                 <form 
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -1031,14 +1032,16 @@ export default function App() {
                   </button>
                 </form>
               </motion.div>
-            ) : (
-              <motion.div 
-                key="welcome-content"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.2, delay: 1.5, ease: "easeOut" }}
-                className="text-center w-full z-20 mb-auto"
-              >
+              )}
+            </AnimatePresence>
+
+            <motion.div 
+              key="welcome-content"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isUnlocked ? 1 : 0, y: isUnlocked ? 0 : 20 }}
+              transition={{ duration: 1.2, delay: isUnlocked ? 1.5 : 0, ease: "easeOut" }}
+              className={`text-center w-full z-20 col-start-1 row-start-1 ${!isUnlocked ? 'pointer-events-none' : ''}`}
+            >
                 <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
                   {t.welcome.subtitle}
                 </h2>
@@ -1055,8 +1058,7 @@ export default function App() {
                 </div>
                 <Countdown t={t} />
               </motion.div>
-            )}
-          </AnimatePresence>
+          </div>
         </section>
 
         {/* Ceremony Section */}
