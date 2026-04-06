@@ -954,14 +954,14 @@ export default function App() {
 
       <main>
         {/* Welcome Section */}
-        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-20 pb-20 sm:pb-32 z-10">
+        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-12 pb-12 sm:pb-20 z-10">
           
           {/* Couple Photo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             transition={{ duration: 1.5, delay: 1.0, ease: "easeOut" }}
-            className="z-20 mt-auto relative"
+            className="z-20 mt-auto relative mb-6 sm:mb-8"
           >
             {isUnlocked && <BurstAnimation delay={0.5} />}
             <RotateOnClick className="relative z-20 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto mb-8 sm:mb-10 rounded-full overflow-hidden border-2 border-amber-200/20 shadow-[0_0_40px_rgba(253,230,138,0.1)] bg-zinc-900">
@@ -976,7 +976,7 @@ export default function App() {
             </RotateOnClick>
           </motion.div>
 
-          <div className="w-full grid mb-auto place-items-center">
+          <div className="w-full relative mb-auto">
             <AnimatePresence>
               {!isUnlocked && (
                 <motion.div
@@ -984,9 +984,9 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0, transition: { duration: 0.8, delay: 2.0, ease: "easeOut" } }}
                   exit={{ opacity: 0, y: -20, transition: { duration: 0.4, delay: 0, ease: "easeIn" } }}
-                  className="text-center w-full max-w-xs z-30 col-start-1 row-start-1"
+                  className="absolute inset-0 flex items-center justify-center z-30"
                 >
-                <div className="flex flex-col gap-6 items-center">
+                <div className="flex flex-col gap-6 items-center w-full max-w-xs text-center">
                   {/* Password Dots */}
                   <div className="flex gap-3 mb-4">
                     {Array.from({ length: 6 }).map((_, i) => (
@@ -1002,7 +1002,7 @@ export default function App() {
                   )}
 
                   {/* Numpad */}
-                  <div className="grid grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                       <button
                         key={num}
@@ -1038,12 +1038,12 @@ export default function App() {
                             }
                           }
                         }}
-                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/10 flex items-center justify-center text-2xl sm:text-3xl text-zinc-200 hover:bg-white/10 active:bg-white/20 transition-colors font-light"
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/10 flex items-center justify-center text-xl sm:text-2xl text-zinc-200 hover:bg-white/10 active:bg-white/20 transition-colors font-light"
                       >
                         {num}
                       </button>
                     ))}
-                    <div className="w-16 h-16 sm:w-20 sm:h-20" /> {/* Empty cell */}
+                    <div className="w-14 h-14 sm:w-16 sm:h-16" /> {/* Empty cell */}
                     <button
                       onClick={async () => {
                         if (password.length >= 6) return;
@@ -1077,7 +1077,7 @@ export default function App() {
                           }
                         }
                       }}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/10 flex items-center justify-center text-2xl sm:text-3xl text-zinc-200 hover:bg-white/10 active:bg-white/20 transition-colors font-light"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/10 flex items-center justify-center text-xl sm:text-2xl text-zinc-200 hover:bg-white/10 active:bg-white/20 transition-colors font-light"
                     >
                       0
                     </button>
@@ -1086,9 +1086,9 @@ export default function App() {
                         setPassword(p => p.slice(0, -1));
                         setShowPasswordError(false);
                       }}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-white/5 active:bg-white/10 transition-colors"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-white/5 active:bg-white/10 transition-colors"
                     >
-                      <Delete className="w-6 h-6 sm:w-8 sm:h-8" />
+                      <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
                   </div>
                 </div>
@@ -1101,7 +1101,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isUnlocked ? 1 : 0, y: isUnlocked ? 0 : 20 }}
               transition={{ duration: 1.2, delay: isUnlocked ? 4.0 : 0, ease: "easeOut" }}
-              className={`text-center w-full z-20 col-start-1 row-start-1 ${!isUnlocked ? 'pointer-events-none' : ''}`}
+              className={`text-center w-full z-20 ${!isUnlocked ? 'pointer-events-none' : ''}`}
             >
                 <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
                   {t.welcome.subtitle}
