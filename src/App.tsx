@@ -734,7 +734,7 @@ const FairyLights = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 3, delay: 3.5 }}
+      transition={{ duration: 3, delay: 1.5 }}
       className="fixed inset-0 w-full h-[100lvh] overflow-hidden pointer-events-none z-0"
     >
       {lights.map((light) => (
@@ -802,6 +802,9 @@ const BurstAnimation = ({ delay }: { delay: number }) => {
 };
 
 export default function App() {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPasswordError, setShowPasswordError] = useState(false);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [lang, setLang] = useState<Lang>('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -848,14 +851,15 @@ export default function App() {
   return (
     <div className="relative w-full bg-zinc-950 overflow-x-hidden">
       <div className="bg-noise" />
-      <FairyLights />
+      {isUnlocked && <FairyLights />}
 
-      <motion.header 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 5.0, duration: 1 }}
-        className="absolute top-0 left-0 right-0 z-40 flex items-center justify-center p-6 sm:p-8 pointer-events-none"
-      >
+      {isUnlocked && (
+        <motion.header 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3.0, duration: 1 }}
+          className="absolute top-0 left-0 right-0 z-40 flex items-center justify-center p-6 sm:p-8 pointer-events-none"
+        >
         <nav className="flex gap-3 sm:gap-8 text-[10px] sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-zinc-400 pointer-events-auto">
           {sections.filter(s => s.id !== 'welcome').map(s => (
             <a key={s.id} href={`#${s.id}`} className="hover:text-amber-100 transition-colors">
@@ -903,8 +907,10 @@ export default function App() {
           </div>
         </div>
       </motion.header>
+      )}
 
       {/* Sticky Summary Header */}
+      {isUnlocked && (
       <div 
         className={`fixed top-0 left-0 right-0 z-30 flex flex-col items-center justify-center p-4 sm:p-5 bg-[#050505]/30 backdrop-blur-md border-b border-white/5 transition-all duration-700 ease-in-out ${
           activeSectionIndex > 0 ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
@@ -937,6 +943,7 @@ export default function App() {
           </AnimatePresence>
         </div>
       </div>
+      )}
 
       <main>
         {/* Welcome Section */}
@@ -949,7 +956,7 @@ export default function App() {
             transition={{ duration: 1.5, delay: 1.0, ease: "easeOut" }}
             className="z-20 mt-auto relative"
           >
-            <BurstAnimation delay={2.5} />
+            {isUnlocked && <BurstAnimation delay={0.2} />}
             <RotateOnClick className="relative z-20 w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto mb-8 sm:mb-10 rounded-full overflow-hidden border-2 border-amber-200/20 shadow-[0_0_40px_rgba(253,230,138,0.1)] bg-zinc-900">
               <img 
                 src={coupleImg} 
@@ -962,31 +969,99 @@ export default function App() {
             </RotateOnClick>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 4.5, ease: "easeOut" }}
-            className="text-center w-full z-20 mb-auto"
-          >
-            <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
-              {t.welcome.subtitle}
-            </h2>
+          <AnimatePresence mode="wait">
+            {!isUnlocked ? (
+              <motion.div
+                key="password-input"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.8, delay: 2.0, ease: "easeOut" }}
+                className="text-center w-full max-w-xs z-20 mb-auto"
+              >
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    // Basic hashing check using Web Crypto API
+                    try {
+                      const encoder = new TextEncoder();
+                      const data = encoder.encode(password);
+                      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                      const hashArray = Array.from(new Uint8Array(hashBuffer));
+                      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                      
+                      if (hashHex === '57367e207dbd56a32e08943ed1c736bf6b59e20819fef47d83faa7c16d9400ea') {
+                        setIsUnlocked(true);
+                        setShowPasswordError(false);
+                      } else {
+                        setShowPasswordError(true);
+                        setPassword('');
+                      }
+                    } catch (err) {
+                      // Fallback if crypto is not available
+                      if (password === '190926') {
+                        setIsUnlocked(true);
+                        setShowPasswordError(false);
+                      } else {
+                        setShowPasswordError(true);
+                        setPassword('');
+                      }
+                    }
+                  }}
+                  className="flex flex-col gap-4"
+                >
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setShowPasswordError(false);
+                    }}
+                    placeholder="Enter Password"
+                    className={`w-full px-6 py-4 bg-zinc-900/50 border ${showPasswordError ? 'border-red-500/50' : 'border-white/10'} rounded-full text-center text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-amber-200/50 transition-colors`}
+                  />
+                  {showPasswordError && (
+                    <span className="text-red-400 text-sm">Incorrect password</span>
+                  )}
+                  <button
+                    type="submit"
+                    className="w-full px-8 py-4 bg-amber-200/10 hover:bg-amber-200/20 border border-amber-200/20 rounded-full text-amber-100 uppercase tracking-widest text-sm transition-all duration-300"
+                  >
+                    Enter
+                  </button>
+                </form>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="welcome-content"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, delay: 1.5, ease: "easeOut" }}
+                className="text-center w-full z-20 mb-auto"
+              >
+                <h2 className="text-xs sm:text-sm uppercase tracking-[0.3em] sm:tracking-[0.4em] text-amber-100/60 mb-6 sm:mb-8">
+                  {t.welcome.subtitle}
+                </h2>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-x-4 sm:gap-x-6 gap-y-2 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2 text-5xl sm:text-7xl md:text-8xl font-serif font-light tracking-tight text-zinc-100">
-              <span className="text-center">Katharina</span>
-              <span className="text-amber-200/40 italic text-4xl sm:text-6xl md:text-7xl px-1">&</span>
-              <span className="text-center">Federico</span>
-            </div>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-x-4 sm:gap-x-6 gap-y-2 mb-6 sm:mb-8 w-full max-w-5xl mx-auto px-2 text-5xl sm:text-7xl md:text-8xl font-serif font-light tracking-tight text-zinc-100">
+                  <span className="text-center">Katharina</span>
+                  <span className="text-amber-200/40 italic text-4xl sm:text-6xl md:text-7xl px-1">&</span>
+                  <span className="text-center">Federico</span>
+                </div>
 
-            <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-8 sm:mb-12">
-              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
-              <span className="tracking-wide">{t.welcome.date}</span>
-            </div>
-            <Countdown t={t} />
-          </motion.div>
+                <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-8 sm:mb-12">
+                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
+                  <span className="tracking-wide">{t.welcome.date}</span>
+                </div>
+                <Countdown t={t} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
 
         {/* Ceremony Section */}
+        {isUnlocked && (
+        <>
         <section id="ceremony" className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -1180,6 +1255,8 @@ export default function App() {
             )}
           </motion.div>
         </section>
+        </>
+        )}
       </main>
 
       {/* Toast Notification */}
