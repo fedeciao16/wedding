@@ -11,7 +11,7 @@ const translations = {
     nav: { ceremony: 'Ceremony', reception: 'Reception', rsvp: 'RSVP' },
     welcome: { subtitle: 'We are getting married', date: '19th September 2026', dateShort: '19th Sept 2026', dateNumeric: '19.09.26' },
     ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal', parkingLabel: 'Parking', parkingOr: 'or' },
-    reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal, but bring something warm as Palazzolo Acreide gets cool at night.', parkingLabel: 'Parking', parkingInfo: 'Free on-site parking' },
+    reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal, but bring something warm as Palazzolo Acreide gets cool at night', parkingLabel: 'Parking', parkingInfo: 'Free on-site parking' },
     rsvp: { 
       title: 'Join Us', 
       desc: 'Please let us know if you can make it to our special day.', 
@@ -52,7 +52,7 @@ const translations = {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
     welcome: { subtitle: 'Wir heiraten', date: '19. September 2026', dateShort: '19. Sept 2026', dateNumeric: '19.09.26' },
     ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich', parkingLabel: 'Parken', parkingOr: 'oder' },
-    reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird.', parkingLabel: 'Parken', parkingInfo: 'Kostenlose Parkplätze vor Ort' },
+    reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird', parkingLabel: 'Parken', parkingInfo: 'Kostenlose Parkplätze vor Ort' },
     rsvp: { 
       title: 'Feiert mit uns', 
       desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', 
@@ -93,7 +93,7 @@ const translations = {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'Conferma' },
     welcome: { subtitle: 'Ci sposiamo', date: '19 Settembre 2026', dateShort: '19 Sett 2026', dateNumeric: '19.09.26' },
     ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale', parkingLabel: 'Parcheggio', parkingOr: 'o' },
-    reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera.', parkingLabel: 'Parcheggio', parkingInfo: 'Gratuito in loco' },
+    reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera', parkingLabel: 'Parcheggio', parkingInfo: 'Gratuito in loco' },
     rsvp: { 
       title: 'Unitevi a noi', 
       desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', 
@@ -547,70 +547,68 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                       )}
                     </motion.div>
                   )}
+
+                  <div className="pt-4 flex gap-3">
+                    {step > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setStep(0)}
+                        className="px-6 py-3 border border-white/10 rounded-full text-zinc-400 hover:bg-zinc-800 transition-colors flex items-center gap-2"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        {t.rsvp.form.back}
+                      </button>
+                    )}
+                    
+                    {step === 0 ? (
+                      reception === false ? (
+                        <button
+                          type="submit"
+                          disabled={!isStepValid() || isSubmitting}
+                          onClick={handleSubmit}
+                          className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <div className="w-5 h-5 border-2 border-amber-950/30 border-t-amber-950 rounded-full animate-spin" />
+                          ) : (
+                            <>
+                              <Check className="w-4 h-4" />
+                              {t.rsvp.form.submit}
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={!isStepValid()}
+                          onClick={() => setStep(1)}
+                          className="flex-1 px-6 py-3 bg-white text-zinc-950 rounded-full font-medium hover:bg-zinc-200 transition-all disabled:opacity-50 disabled:hover:bg-white flex items-center justify-center gap-2"
+                        >
+                          {t.rsvp.form.next}
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      )
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={!isStepValid() || isSubmitting}
+                        onClick={handleSubmit}
+                        className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
+                      >
+                        {isSubmitting ? (
+                          <div className="w-5 h-5 border-2 border-amber-950/30 border-t-amber-950 rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <Check className="w-4 h-4" />
+                            {t.rsvp.form.submit}
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </form>
               )}
             </div>
-
-            {!isSuccess && (
-              <div className="p-6 border-t border-white/5 bg-zinc-950 shrink-0 flex gap-3">
-                {step > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setStep(0)}
-                    className="px-6 py-3 border border-white/10 rounded-full text-zinc-400 hover:bg-zinc-800 transition-colors flex items-center gap-2"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    {t.rsvp.form.back}
-                  </button>
-                )}
-                
-                {step === 0 ? (
-                  reception === false ? (
-                    <button
-                      type="submit"
-                      disabled={!isStepValid() || isSubmitting}
-                      onClick={handleSubmit}
-                      className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
-                    >
-                      {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-amber-950/30 border-t-amber-950 rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <Check className="w-4 h-4" />
-                          {t.rsvp.form.submit}
-                        </>
-                      )}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={!isStepValid()}
-                      onClick={() => setStep(1)}
-                      className="flex-1 px-6 py-3 bg-white text-zinc-950 rounded-full font-medium hover:bg-zinc-200 transition-all disabled:opacity-50 disabled:hover:bg-white flex items-center justify-center gap-2"
-                    >
-                      {t.rsvp.form.next}
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  )
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={!isStepValid() || isSubmitting}
-                    onClick={handleSubmit}
-                    className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <div className="w-5 h-5 border-2 border-amber-950/30 border-t-amber-950 rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        <Check className="w-4 h-4" />
-                        {t.rsvp.form.submit}
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-            )}
           </motion.div>
         </div>
       )}
@@ -631,7 +629,7 @@ const downloadICS = (event: 'ceremony' | 'reception') => {
     title = 'Wedding Reception - Katharina & Federico';
     description = 'Wedding Reception at Ristorante La Trota. Map: https://maps.app.goo.gl/szDuGBAqywC3kCAe9';
     location = 'Ristorante la Trota, Strada Mare Monti, 287, 96010 Palazzolo Acreide SR, Italy';
-    startUTC = '20260919T170000Z'; // 19:00 CEST
+    startUTC = '20260919T163000Z'; // 18:30 CEST
     endUTC = '20260919T220000Z'; // 00:00 CEST (next day)
   }
 
@@ -720,7 +718,11 @@ const FairyLights = () => {
   const [lights, setLights] = useState<{id: number, top: string, left: string, duration: number, delay: number, size: number}[]>([]);
   
   useEffect(() => {
-    setLights(Array.from({ length: 150 }).map((_, i) => ({
+    // Reduce number of lights on smaller screens to improve performance
+    const isMobile = window.innerWidth < 768;
+    const lightCount = isMobile ? 50 : 100;
+    
+    setLights(Array.from({ length: lightCount }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -737,8 +739,14 @@ const FairyLights = () => {
       transition={{ duration: 3, delay: 2.5 }}
       className="fixed inset-0 w-full h-[100lvh] overflow-hidden pointer-events-none z-0"
     >
+      <style>{`
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.2; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.3); }
+        }
+      `}</style>
       {lights.map((light) => (
-        <motion.div
+        <div
           key={light.id}
           className="absolute rounded-full bg-amber-100/80"
           style={{
@@ -746,17 +754,9 @@ const FairyLights = () => {
             left: light.left,
             width: light.size,
             height: light.size,
-            boxShadow: `0 0 ${light.size * 4}px ${light.size * 1.5}px rgba(253, 230, 138, 0.4)`,
-          }}
-          animate={{
-            opacity: [0.2, 0.9, 0.2],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: light.duration,
-            delay: light.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
+            boxShadow: `0 0 ${light.size * 3}px ${light.size}px rgba(253, 230, 138, 0.4)`,
+            animation: `twinkle ${light.duration}s ease-in-out ${light.delay}s infinite`,
+            willChange: 'opacity, transform',
           }}
         />
       ))}
@@ -944,7 +944,7 @@ export default function App() {
             )}
             {activeSectionIndex >= 3 && (
               <SummaryItem key="reception">
-                19:00 {t.nav.reception}
+                18:30 {t.nav.reception}
               </SummaryItem>
             )}
           </AnimatePresence>
@@ -954,7 +954,7 @@ export default function App() {
 
       <main>
         {/* Welcome Section */}
-        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-12 pb-12 sm:pb-20 z-10">
+        <section id="welcome" className="min-h-screen flex flex-col items-center justify-center relative px-6 pt-12 sm:pt-32 landscape:pt-24 pb-12 sm:pb-20 z-10">
           
           {/* Couple Photo */}
           <motion.div
@@ -1193,7 +1193,7 @@ export default function App() {
               {t.reception.title}
             </h2>
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
-              19:00
+              18:30
             </div>
             <a 
               href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9"

@@ -24,4 +24,5 @@ html {
   opacity: 0.04;
   pointer-events: none;
   z-index: 150;
+  transform: translateZ(0);
 }
