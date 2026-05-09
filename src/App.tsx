@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete, Camera } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Minus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete, Camera } from 'lucide-react';
 import { SplashScreen } from './components/SplashScreen';
 import coupleImg from './assets/couple.jpg';
 
@@ -35,8 +35,7 @@ const translations = {
         menuMeat: 'Meat Alternative',
         menuChild: 'Children\'s Menu',
         allergies: 'Allergies or Intolerances',
-        addGuest: 'Add another guest',
-        removeGuest: 'Remove guest',
+        numberOfPersons: 'Number of persons',
         next: 'Next',
         back: 'Back',
         submit: 'Submit RSVP',
@@ -76,8 +75,7 @@ const translations = {
         menuMeat: 'Fleischalternative',
         menuChild: 'Kindermenü',
         allergies: 'Allergien oder Lebensmittelunverträglichkeiten',
-        addGuest: 'Weiteren Gast hinzufügen',
-        removeGuest: 'Gast entfernen',
+        numberOfPersons: 'Anzahl der Personen',
         next: 'Weiter',
         back: 'Zurück',
         submit: 'Zusage absenden',
@@ -117,8 +115,7 @@ const translations = {
         menuMeat: 'Alternativa di carne',
         menuChild: 'Menù per bambini',
         allergies: 'Allergie o intolleranze alimentari',
-        addGuest: 'Aggiungi un altro ospite',
-        removeGuest: 'Rimuovi ospite',
+        numberOfPersons: 'Numero di persone',
         next: 'Avanti',
         back: 'Indietro',
         submit: 'Invia conferma',
@@ -235,18 +232,17 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
     return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
-  const handleAddGuest = () => {
-    if (guests.length < 10) {
-      setGuests([...guests, { firstName: '', lastName: '', menu: '', allergies: '' }]);
+  const handleGuestsCountChange = (newCount: number) => {
+    if (newCount < 1 || newCount > 10) return;
+    const newGuests = [...guests];
+    if (newCount > guests.length) {
+      for (let i = guests.length; i < newCount; i++) {
+        newGuests.push({ firstName: '', lastName: '', menu: '', allergies: '' });
+      }
+    } else {
+      newGuests.length = newCount;
     }
-  };
-
-  const handleRemoveGuest = (index: number) => {
-    if (guests.length > 1) {
-      const newGuests = [...guests];
-      newGuests.splice(index, 1);
-      setGuests(newGuests);
-    }
+    setGuests(newGuests);
   };
 
   const updateGuest = (index: number, field: string, value: string) => {
@@ -339,8 +335,7 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-transparent"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
           
           <motion.div
@@ -446,6 +441,28 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                           </button>
                         </div>
                       </div>
+                      <div className="space-y-4">
+                        <p className="text-sm font-medium text-zinc-300">{t.rsvp.form.numberOfPersons}</p>
+                        <div className="flex items-center gap-4">
+                          <button
+                            type="button"
+                            onClick={() => handleGuestsCountChange(guests.length - 1)}
+                            disabled={guests.length <= 1}
+                            className="p-3 bg-zinc-800 border border-white/10 rounded-xl text-zinc-400 hover:text-amber-200 hover:border-amber-200/50 transition-colors disabled:opacity-50 disabled:hover:text-zinc-400 disabled:hover:border-white/10"
+                          >
+                            <Minus className="w-5 h-5" />
+                          </button>
+                          <span className="text-xl font-serif text-zinc-100 min-w-[2rem] text-center">{guests.length}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleGuestsCountChange(guests.length + 1)}
+                            disabled={guests.length >= 10}
+                            className="p-3 bg-zinc-800 border border-white/10 rounded-xl text-zinc-400 hover:text-amber-200 hover:border-amber-200/50 transition-colors disabled:opacity-50 disabled:hover:text-zinc-400 disabled:hover:border-white/10"
+                          >
+                            <Plus className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
                     </motion.div>
                   ) : (
                     <motion.div 
@@ -461,15 +478,6 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                             <h4 className="text-amber-200 font-serif text-lg">
                               {t.rsvp.form.guestTitle.replace('{{n}}', (index + 1).toString())}
                             </h4>
-                            {guests.length > 1 && (
-                              <button 
-                                type="button"
-                                onClick={() => handleRemoveGuest(index)}
-                                className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            )}
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">
@@ -535,16 +543,6 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                         </div>
                       ))}
 
-                      {guests.length < 10 && (
-                        <button
-                          type="button"
-                          onClick={handleAddGuest}
-                          className="w-full py-4 bg-zinc-800/50 border border-dashed border-white/10 rounded-2xl text-zinc-400 hover:text-amber-200/60 hover:border-amber-200/20 transition-all flex items-center justify-center gap-2 group"
-                        >
-                          <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          {t.rsvp.form.addGuest}
-                        </button>
-                      )}
                     </motion.div>
                   )}
 
