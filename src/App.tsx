@@ -883,7 +883,6 @@ export default function App() {
 
   return (
     <div className="relative w-full bg-zinc-950 overflow-x-hidden">
-      <div className="bg-noise" />
       {isUnlocked && <FairyLights />}
 
       {isUnlocked && (
