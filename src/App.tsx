@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete, Camera } from 'lucide-react';
 import { SplashScreen } from './components/SplashScreen';
 import coupleImg from './assets/couple.jpg';
 
@@ -46,7 +46,7 @@ const translations = {
         oneFormPerFamily: 'Please fill out one form per family.'
       }
     },
-    countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs' }
+    countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs', uploadFolder: 'Upload Photos' }
   },
   de: {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
@@ -87,7 +87,7 @@ const translations = {
         oneFormPerFamily: 'Bitte ein Formular pro Familie ausfüllen.'
       }
     },
-    countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek' }
+    countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek', uploadFolder: 'Fotos hochladen' }
   },
   it: {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'Conferma' },
@@ -128,7 +128,7 @@ const translations = {
         oneFormPerFamily: 'Compilare un modulo per famiglia per favore.'
       }
     },
-    countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec' }
+    countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec', uploadFolder: 'Carica Foto' }
   }
 };
 
@@ -629,7 +629,7 @@ const downloadICS = (event: 'ceremony' | 'reception') => {
     title = 'Wedding Reception - Katharina & Federico';
     description = 'Wedding Reception at Ristorante La Trota. Map: https://maps.app.goo.gl/szDuGBAqywC3kCAe9';
     location = 'Ristorante la Trota, Strada Mare Monti, 287, 96010 Palazzolo Acreide SR, Italy';
-    startUTC = '20260919T163000Z'; // 18:30 CEST
+    startUTC = '20260919T160000Z'; // 18:00 CEST
     endUTC = '20260919T220000Z'; // 00:00 CEST (next day)
   }
 
@@ -653,12 +653,17 @@ END:VCALENDAR`;
   document.body.removeChild(link);
 };
 
-const Countdown = ({ t }: { t: any }) => {
+const Countdown = ({ t, forceOver }: { t: any, forceOver?: boolean }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [isReady, setIsReady] = useState(false);
   const [isOver, setIsOver] = useState(false);
 
   useEffect(() => {
+    if (forceOver) {
+      setIsOver(true);
+      return;
+    }
+
     // 19th September 2026 15:00 CEST (UTC+2) -> 13:00 UTC
     const targetDate = new Date('2026-09-19T13:00:00Z').getTime();
 
@@ -683,9 +688,28 @@ const Countdown = ({ t }: { t: any }) => {
     const interval = setInterval(calculateTime, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [forceOver]);
 
-  if (isOver) return null;
+  if (isOver) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mt-10 sm:mt-14 flex justify-center"
+      >
+        <a 
+          href="https://photos.app.goo.gl/9r1nmva1qx6aKmQN6"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+        >
+          <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
+          {t.countdown.uploadFolder}
+        </a>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div 
@@ -819,6 +843,8 @@ export default function App() {
   const [isRSVPModalOpen, setIsRSVPModalOpen] = useState(false);
   const [showBankDetails, setShowBankDetails] = useState(false);
 
+  const [langSettingsClicks, setLangSettingsClicks] = useState(0);
+
   useEffect(() => {
     setLang(getInitialLang());
   }, []);
@@ -882,7 +908,10 @@ export default function App() {
           )}
           <div className="relative z-50">
             <button 
-              onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+              onClick={() => {
+                setIsLangMenuOpen(!isLangMenuOpen);
+                setLangSettingsClicks(c => c + 1);
+              }}
               className="flex items-center gap-2 text-zinc-400 hover:text-amber-100 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] p-2"
             >
               <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -944,7 +973,7 @@ export default function App() {
             )}
             {activeSectionIndex >= 3 && (
               <SummaryItem key="reception">
-                18:30 {t.nav.reception}
+                18:00 {t.nav.reception}
               </SummaryItem>
             )}
           </AnimatePresence>
@@ -1117,7 +1146,7 @@ export default function App() {
                   <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
                   <span className="tracking-wide">{t.welcome.date}</span>
                 </div>
-                <Countdown t={t} />
+                <Countdown t={t} forceOver={langSettingsClicks >= 10} />
               </motion.div>
           </div>
         </section>
@@ -1171,9 +1200,9 @@ export default function App() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
                 onClick={() => downloadICS('ceremony')}
-                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+                className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
               >
-                <CalendarPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+                <CalendarPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
                 {t.ceremony.calendar}
               </button>
             </div>
@@ -1193,7 +1222,7 @@ export default function App() {
               {t.reception.title}
             </h2>
             <div className="text-6xl sm:text-8xl md:text-9xl font-serif font-light mb-8 sm:mb-12 text-zinc-100">
-              18:30
+              18:00
             </div>
             <a 
               href="https://maps.app.goo.gl/szDuGBAqywC3kCAe9"
@@ -1222,9 +1251,9 @@ export default function App() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
                 onClick={() => downloadICS('reception')}
-                className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+                className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
               >
-                <CalendarPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200/60" />
+                <CalendarPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
                 {t.reception.calendar}
               </button>
             </div>
@@ -1240,7 +1269,7 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-center max-w-2xl w-full"
           >
-            <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-amber-200/40 mx-auto mb-8 sm:mb-10" />
+            <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-amber-200 opacity-40 mx-auto mb-8 sm:mb-10" />
             <h2 className="text-5xl sm:text-7xl md:text-8xl font-serif font-light mb-6 sm:mb-8 text-zinc-100">
               {t.rsvp.title}
             </h2>
@@ -1249,8 +1278,9 @@ export default function App() {
             </p>
             <button 
               onClick={() => setIsRSVPModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-10 sm:px-12 py-4 sm:py-5 bg-zinc-100 text-[#050505] rounded-full hover:bg-amber-50 transition-colors text-xs sm:text-sm uppercase tracking-[0.2em] font-medium w-full sm:w-auto mb-16 sm:mb-20"
+              className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center mb-16 sm:mb-20"
             >
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
               {t.rsvp.btn}
             </button>
           </motion.div>
@@ -1265,7 +1295,7 @@ export default function App() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="text-center max-w-2xl w-full"
           >
-            <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-amber-200/40 mx-auto mb-8 sm:mb-10" />
+            <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-amber-200 opacity-40 mx-auto mb-8 sm:mb-10" />
             <h2 className="text-5xl sm:text-7xl md:text-8xl font-serif font-light mb-6 sm:mb-8 text-zinc-100">
               {t.rsvp.giftsTitle}
             </h2>
@@ -1276,8 +1306,9 @@ export default function App() {
             {!showBankDetails ? (
               <button 
                 onClick={() => setShowBankDetails(true)}
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300"
+                className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
               >
+                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
                 {t.rsvp.revealDetails}
               </button>
             ) : (
