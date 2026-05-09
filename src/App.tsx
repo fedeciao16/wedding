@@ -251,8 +251,16 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
     setGuests(newGuests);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!isStepValid()) return;
+
+    // If on first step and they are coming to the reception, move to next step
+    if (step === 0 && reception !== false) {
+      setStep(1);
+      return;
+    }
+
     setIsSubmitting(true);
 
     const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSeQDie7Kp1wwK2CbpsYXtUii9IjaKgHKb-DCS-_FrAc3l65Qw/formResponse';
@@ -279,7 +287,7 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
         else if (guest.menu === 'child') menuValue = 'Kindermenü / Menu per bambini';
         
         params.append(ids.menu, menuValue);
-        params.append(ids.allergies, guest.allergies);
+        params.append(ids.allergies, guest.allergies.trim() || '-');
         
         if (ids.addAnother) {
           params.append(ids.addAnother, index < guests.length - 1 ? 'Ja / Sì' : 'Nein / No');
