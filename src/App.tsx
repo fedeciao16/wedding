@@ -296,41 +296,17 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
     }
 
     try {
-      const iframe = document.createElement('iframe');
-      iframe.name = 'hidden_iframe';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-
-      const form = document.createElement('form');
-      form.action = formUrl;
-      form.method = 'POST';
-      form.target = 'hidden_iframe';
-
-      params.forEach((value, key) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+      await fetch(formUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params.toString()
       });
-
-      document.body.appendChild(form);
-      form.submit();
-
-      setTimeout(() => {
-        if (document.body.contains(form)) {
-          document.body.removeChild(form);
-        }
-        setIsSuccess(true);
-        setIsSubmitting(false);
-      }, 500);
-
-      // Clean up the iframe after a much longer delay so it doesn't cancel the network request on slow connections.
-      setTimeout(() => {
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-      }, 10000);
+      
+      setIsSuccess(true);
+      setIsSubmitting(false);
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsSubmitting(false);
