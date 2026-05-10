@@ -387,14 +387,15 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-8">
-                  {step === 0 ? (
-                    <motion.div 
-                      key="step0"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="space-y-6"
-                    >
+                  <AnimatePresence mode="wait">
+                    {step === 0 ? (
+                      <motion.div 
+                        key="step0"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-6"
+                      >
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-zinc-300 flex items-center gap-2">
                           <User className="w-4 h-4 text-amber-200/80" />
@@ -553,6 +554,7 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
 
                     </motion.div>
                   )}
+                  </AnimatePresence>
 
                   <div className="pt-4 flex gap-3">
                     {step > 0 && (
@@ -571,7 +573,6 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                         <button
                           type="submit"
                           disabled={!isStepValid() || isSubmitting}
-                          onClick={handleSubmit}
                           className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
                         >
                           {isSubmitting ? (
@@ -598,7 +599,6 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
                       <button
                         type="submit"
                         disabled={!isStepValid() || isSubmitting}
-                        onClick={handleSubmit}
                         className="flex-1 px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
                       >
                         {isSubmitting ? (
