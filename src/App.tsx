@@ -318,11 +318,19 @@ const RSVPModal = ({ isOpen, onClose, t }: { isOpen: boolean, onClose: () => voi
       form.submit();
 
       setTimeout(() => {
-        document.body.removeChild(form);
-        document.body.removeChild(iframe);
+        if (document.body.contains(form)) {
+          document.body.removeChild(form);
+        }
         setIsSuccess(true);
         setIsSubmitting(false);
-      }, 1000);
+      }, 500);
+
+      // Clean up the iframe after a much longer delay so it doesn't cancel the network request on slow connections.
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 10000);
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsSubmitting(false);
