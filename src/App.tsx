@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Minus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete, Camera } from 'lucide-react';
+import { MapPin, Calendar, Heart, Globe, CalendarPlus, Shirt, SquareParking, X, ChevronRight, ChevronLeft, Check, Plus, Minus, Trash2, Utensils, AlertCircle, User, Copy, CheckCircle2, Gift, Delete, Camera, Dices } from 'lucide-react';
 import { SplashScreen } from './components/SplashScreen';
+import { ShareWithUsModal } from './components/ShareWithUsModal';
 import coupleImg from './assets/couple.jpg';
+import confetti from 'canvas-confetti';
 
 type Lang = 'en' | 'de' | 'it';
 
@@ -13,6 +15,7 @@ const translations = {
     ceremony: { title: 'The Ceremony', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal', parkingLabel: 'Parking', parkingOr: 'or' },
     reception: { title: 'The Reception', map: 'View on Map', calendar: 'Add to Calendar', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formal, but bring something warm as Palazzolo Acreide gets cool at night', parkingLabel: 'Parking', parkingInfo: 'Free on-site parking' },
     rsvp: { 
+      tooLate: 'It\'s too late now!',
       title: 'Join Us', 
       desc: 'Please let us know if you can make it to our special day.', 
       btn: 'RSVP Now', 
@@ -45,7 +48,8 @@ const translations = {
         oneFormPerFamily: 'Please fill out one form per family.'
       }
     },
-    countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs', uploadFolder: 'Upload Photos' }
+    countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs', uploadFolder: 'Upload Photos' },
+    share: { btn: 'Share with us', title: 'Share with us', desc: 'Please select a question and share your answer below!', selectPrompt: 'Select a prompt', chooseQuestion: 'Choose a question...', answerLabel: 'Your answer', answerPlaceholder: 'Write your answer here...', submit: 'Submit', successTitle: 'Thank you!', successDesc: 'Your response has been recorded.' }
   },
   de: {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
@@ -53,6 +57,7 @@ const translations = {
     ceremony: { title: 'Die Trauung', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich', parkingLabel: 'Parken', parkingOr: 'oder' },
     reception: { title: 'Die Feier', map: 'Auf Karte ansehen', calendar: 'Zum Kalender hinzufügen', dressCodeLabel: 'Dresscode', dressCodeInfo: 'Festlich, aber bringt etwas Warmes mit, da es in Palazzolo Acreide abends kühl wird', parkingLabel: 'Parken', parkingInfo: 'Kostenlose Parkplätze vor Ort' },
     rsvp: { 
+      tooLate: 'Es ist jetzt zu spät!',
       title: 'Feiert mit uns', 
       desc: 'Bitte gebt uns Bescheid, ob ihr an unserem besonderen Tag dabei sein könnt.', 
       btn: 'Jetzt zusagen', 
@@ -85,7 +90,8 @@ const translations = {
         oneFormPerFamily: 'Bitte ein Formular pro Familie ausfüllen.'
       }
     },
-    countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek', uploadFolder: 'Fotos hochladen' }
+    countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek', uploadFolder: 'Fotos hochladen' },
+    share: { btn: 'Teile mit uns', title: 'Teile mit uns', desc: 'Bitte wähle eine Frage und hinterlasse deine Antwort!', selectPrompt: 'Wähle eine Frage', chooseQuestion: 'Wähle eine Frage...', answerLabel: 'Deine Antwort', answerPlaceholder: 'Schreibe deine Antwort hier...', submit: 'Senden', successTitle: 'Danke!', successDesc: 'Deine Antwort wurde gespeichert.' }
   },
   it: {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'Conferma' },
@@ -93,6 +99,7 @@ const translations = {
     ceremony: { title: 'La Cerimonia', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale', parkingLabel: 'Parcheggio', parkingOr: 'o' },
     reception: { title: 'Il Ricevimento', map: 'Vedi sulla mappa', calendar: 'Aggiungi al Calendario', dressCodeLabel: 'Dress Code', dressCodeInfo: 'Formale, ma portate qualcosa di caldo poiché a Palazzolo Acreide fa fresco la sera', parkingLabel: 'Parcheggio', parkingInfo: 'Gratuito in loco' },
     rsvp: { 
+      tooLate: 'Ora è troppo tardi!',
       title: 'Unitevi a noi', 
       desc: 'Fateci sapere se potrete partecipare al nostro giorno speciale.', 
       btn: 'Conferma ora', 
@@ -125,7 +132,8 @@ const translations = {
         oneFormPerFamily: 'Compilare un modulo per famiglia per favore.'
       }
     },
-    countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec', uploadFolder: 'Carica Foto' }
+    countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec', uploadFolder: 'Carica Foto' },
+    share: { btn: 'Condividi con noi', title: 'Condividi con noi', desc: 'Scegli una domanda e lascia la tua risposta!', selectPrompt: 'Scegli una domanda', chooseQuestion: 'Scegli una domanda...', answerLabel: 'La tua risposta', answerPlaceholder: 'Scrivi la tua risposta qui...', submit: 'Invia', successTitle: 'Grazie!', successDesc: 'La tua risposta è stata registrata.' }
   }
 };
 
@@ -643,7 +651,7 @@ END:VCALENDAR`;
   document.body.removeChild(link);
 };
 
-const Countdown = ({ t, forceOver }: { t: any, forceOver?: boolean }) => {
+const Countdown = ({ t, forceOver, onShareClick }: { t: any, forceOver?: boolean, onShareClick?: () => void }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [isReady, setIsReady] = useState(false);
   const [isOver, setIsOver] = useState(false);
@@ -686,7 +694,7 @@ const Countdown = ({ t, forceOver }: { t: any, forceOver?: boolean }) => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="mt-10 sm:mt-14 flex justify-center"
+        className="mt-10 sm:mt-14 flex flex-col sm:flex-row justify-center items-center gap-4"
       >
         <a 
           href="https://photos.app.goo.gl/9r1nmva1qx6aKmQN6"
@@ -697,34 +705,47 @@ const Countdown = ({ t, forceOver }: { t: any, forceOver?: boolean }) => {
           <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
           {t.countdown.uploadFolder}
         </a>
+        <button 
+          onClick={onShareClick}
+          className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center"
+        >
+          <Dices className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
+          {t.share.btn}
+        </button>
       </motion.div>
     );
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: isReady ? 1 : 0 }}
-      transition={{ duration: 0.5 }}
-      className="flex gap-4 sm:gap-8 mt-10 sm:mt-14 text-zinc-300 font-serif justify-center"
-    >
-      <div className="flex flex-col items-center">
-        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.days}</span>
-        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.days}</span>
+    <>
+      <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-8 sm:mb-12">
+        <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
+        <span className="tracking-wide">{t.welcome.date}</span>
       </div>
-      <div className="flex flex-col items-center">
-        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.hours}</span>
-        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.hours}</span>
-      </div>
-      <div className="flex flex-col items-center">
-        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.mins}</span>
-        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.mins}</span>
-      </div>
-      <div className="flex flex-col items-center">
-        <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.secs}</span>
-        <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.secs}</span>
-      </div>
-    </motion.div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isReady ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex gap-4 sm:gap-8 text-zinc-300 font-serif justify-center"
+      >
+        <div className="flex flex-col items-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.days}</span>
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.days}</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.hours}</span>
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.hours}</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.mins}</span>
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.mins}</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl">{timeLeft.secs}</span>
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-amber-200/60 mt-2">{t.countdown.secs}</span>
+        </div>
+      </motion.div>
+    </>
   );
 };
 
@@ -831,6 +852,7 @@ export default function App() {
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isRSVPModalOpen, setIsRSVPModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [showBankDetails, setShowBankDetails] = useState(false);
 
   const [langSettingsClicks, setLangSettingsClicks] = useState(0);
@@ -1131,11 +1153,7 @@ export default function App() {
                   <span className="text-center">Federico</span>
                 </div>
 
-                <div className="flex items-center justify-center gap-3 sm:gap-4 text-xl sm:text-2xl md:text-3xl font-serif text-zinc-300 mb-8 sm:mb-12">
-                  <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-amber-200/60" />
-                  <span className="tracking-wide">{t.welcome.date}</span>
-                </div>
-                <Countdown t={t} forceOver={langSettingsClicks >= 10} />
+                <Countdown t={t} forceOver={langSettingsClicks >= 10} onShareClick={() => setIsShareModalOpen(true)} />
               </motion.div>
           </div>
         </section>
@@ -1266,7 +1284,25 @@ export default function App() {
               {t.rsvp.desc}
             </p>
             <button 
-              onClick={() => setIsRSVPModalOpen(true)}
+              onClick={() => {
+                const targetDate = new Date('2026-09-09T13:00:00Z').getTime();
+                const isTooLate = Date.now() > targetDate || langSettingsClicks >= 10;
+                
+                if (isTooLate) {
+                  setToastMessage(t.rsvp.tooLate);
+                  confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#ffffff', '#fcfcfc', '#f5f5f5'],
+                    ticks: 200,
+                    shapes: ['circle'],
+                    scalar: 0.6
+                  });
+                } else {
+                  setIsRSVPModalOpen(true);
+                }
+              }}
               className="group inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all duration-300 text-xs sm:text-sm uppercase tracking-[0.2em] text-zinc-300 w-full sm:w-auto justify-center mb-16 sm:mb-20"
             >
               <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200 opacity-60 group-hover:scale-110 transition-transform" />
@@ -1361,6 +1397,14 @@ export default function App() {
         isOpen={isRSVPModalOpen} 
         onClose={() => setIsRSVPModalOpen(false)} 
         t={t} 
+      />
+
+      {/* Share With Us Modal */}
+      <ShareWithUsModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        t={t} 
+        lang={lang}
       />
     </div>
   );
