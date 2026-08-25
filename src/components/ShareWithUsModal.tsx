@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Dices, Check, MessageSquare } from 'lucide-react';
 
 const SHARE_ENTRY_IDS = {
+  name: 'entry.1366947673',
   prompt: 'entry.41587986',
   answer: 'entry.1527287205'
 };
@@ -17,6 +18,7 @@ const PROMPTS = [
 ];
 
 export const ShareWithUsModal = ({ isOpen, onClose, t, lang }: { isOpen: boolean, onClose: () => void, t: any, lang: string }) => {
+  const [name, setName] = useState("");
   const [selectedPrompt, setSelectedPrompt] = useState("");
   const [answer, setAnswer] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,13 +28,14 @@ export const ShareWithUsModal = ({ isOpen, onClose, t, lang }: { isOpen: boolean
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPrompt || !answer.trim()) return;
+    if (!name.trim() || !selectedPrompt || !answer.trim()) return;
 
     setIsSubmitting(true);
 
     const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSd_u08pP1DDv440NApOO2l-aA2e3PYBnNrcHeRthbk1uKbqTQ/formResponse';
     
     const params = new URLSearchParams();
+    params.append(SHARE_ENTRY_IDS.name, name);
     params.append(SHARE_ENTRY_IDS.prompt, selectedPrompt);
     params.append(SHARE_ENTRY_IDS.answer, answer);
 
@@ -99,6 +102,18 @@ export const ShareWithUsModal = ({ isOpen, onClose, t, lang }: { isOpen: boolean
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-300">{t.share.nameLabel}</label>
+                  <input 
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-zinc-100 focus:outline-none focus:border-amber-200/50 transition-colors"
+                    placeholder={t.share.namePlaceholder}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <select 
                     value={selectedPrompt}
                     onChange={(e) => setSelectedPrompt(e.target.value)}
@@ -125,7 +140,7 @@ export const ShareWithUsModal = ({ isOpen, onClose, t, lang }: { isOpen: boolean
 
                 <button
                   type="submit"
-                  disabled={!selectedPrompt || !answer.trim() || isSubmitting}
+                  disabled={!name.trim() || !selectedPrompt || !answer.trim() || isSubmitting}
                   className="w-full px-6 py-3 bg-amber-200 text-amber-950 rounded-full font-medium hover:bg-amber-300 transition-all disabled:opacity-50 disabled:hover:bg-amber-200 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (

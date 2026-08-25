@@ -49,7 +49,7 @@ const translations = {
       }
     },
     countdown: { days: 'Days', hours: 'Hours', mins: 'Mins', secs: 'Secs', uploadFolder: 'Upload Photos' },
-    share: { btn: 'Share with us', title: 'Share with us', desc: 'Please select a question and share your answer below!', selectPrompt: 'Select a prompt', chooseQuestion: 'Choose a question...', answerLabel: 'Your answer', answerPlaceholder: 'Write your answer here...', submit: 'Submit', successTitle: 'Thank you!', successDesc: 'Your response has been recorded.' }
+    share: { btn: 'Share with us', title: 'Share with us', desc: 'Please select a question and share your answer below!', selectPrompt: 'Select a prompt', chooseQuestion: 'Choose a question...', nameLabel: 'Your name', namePlaceholder: 'e.g. John Doe', answerLabel: 'Your answer', answerPlaceholder: 'Write your answer here...', submit: 'Submit', successTitle: 'Thank you!', successDesc: 'Your response has been recorded.' }
   },
   de: {
     nav: { ceremony: 'Trauung', reception: 'Feier', rsvp: 'Zusage' },
@@ -91,7 +91,7 @@ const translations = {
       }
     },
     countdown: { days: 'Tage', hours: 'Stunden', mins: 'Min', secs: 'Sek', uploadFolder: 'Fotos hochladen' },
-    share: { btn: 'Teile mit uns', title: 'Teile mit uns', desc: 'Bitte wähle eine Frage und hinterlasse deine Antwort!', selectPrompt: 'Wähle eine Frage', chooseQuestion: 'Wähle eine Frage...', answerLabel: 'Deine Antwort', answerPlaceholder: 'Schreibe deine Antwort hier...', submit: 'Senden', successTitle: 'Danke!', successDesc: 'Deine Antwort wurde gespeichert.' }
+    share: { btn: 'Teile mit uns', title: 'Teile mit uns', desc: 'Bitte wähle eine Frage und hinterlasse deine Antwort!', selectPrompt: 'Wähle eine Frage', chooseQuestion: 'Wähle eine Frage...', nameLabel: 'Dein Name', namePlaceholder: 'z.B. Max Mustermann', answerLabel: 'Deine Antwort', answerPlaceholder: 'Schreibe deine Antwort hier...', submit: 'Senden', successTitle: 'Danke!', successDesc: 'Deine Antwort wurde gespeichert.' }
   },
   it: {
     nav: { ceremony: 'Cerimonia', reception: 'Ricevimento', rsvp: 'Conferma' },
@@ -133,7 +133,7 @@ const translations = {
       }
     },
     countdown: { days: 'Giorni', hours: 'Ore', mins: 'Min', secs: 'Sec', uploadFolder: 'Carica Foto' },
-    share: { btn: 'Condividi con noi', title: 'Condividi con noi', desc: 'Scegli una domanda e lascia la tua risposta!', selectPrompt: 'Scegli una domanda', chooseQuestion: 'Scegli una domanda...', answerLabel: 'La tua risposta', answerPlaceholder: 'Scrivi la tua risposta qui...', submit: 'Invia', successTitle: 'Grazie!', successDesc: 'La tua risposta è stata registrata.' }
+    share: { btn: 'Condividi con noi', title: 'Condividi con noi', desc: 'Scegli una domanda e lascia la tua risposta!', selectPrompt: 'Scegli una domanda', chooseQuestion: 'Scegli una domanda...', nameLabel: 'Il tuo nome', namePlaceholder: 'es. Mario Rossi', answerLabel: 'La tua risposta', answerPlaceholder: 'Scrivi la tua risposta qui...', submit: 'Invia', successTitle: 'Grazie!', successDesc: 'La tua risposta è stata registrata.' }
   }
 };
 
