@@ -1309,15 +1309,15 @@ export default function App() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 border-b border-white/5 pb-3">
                   <span className="text-zinc-500 text-sm uppercase tracking-wider">IBAN</span>
                   <div className="flex items-center">
-                    <span className="text-zinc-200 font-mono text-sm sm:text-base">GB45 REVO 0099 7012 249 61</span>
-                    <CopyButton text="GB45 REVO 0099 7012 249 61" t={t} />
+                    <span className="text-zinc-200 font-mono text-sm sm:text-base">IT95U0200832974001366090195</span>
+                    <CopyButton text="IT95U0200832974001366090195" t={t} />
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 border-b border-white/5 pb-3">
-                  <span className="text-zinc-500 text-sm uppercase tracking-wider">BIC</span>
+                  <span className="text-zinc-500 text-sm uppercase tracking-wider">BIC/SWIFT</span>
                   <div className="flex items-center">
-                    <span className="text-zinc-200 font-mono text-sm sm:text-base">REVOGB21</span>
-                    <CopyButton text="REVOGB21" t={t} />
+                    <span className="text-zinc-200 font-mono text-sm sm:text-base">UNCRITM1K14</span>
+                    <CopyButton text="UNCRITM1K14" t={t} />
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 border-b border-white/5 pb-3">
@@ -1330,8 +1330,8 @@ export default function App() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
                   <span className="text-zinc-500 text-sm uppercase tracking-wider">{lang === 'it' ? 'Banca' : lang === 'de' ? 'Bank' : 'Bank name'}</span>
                   <div className="flex items-center">
-                    <span className="text-zinc-200 text-sm sm:text-base">Revolut</span>
-                    <CopyButton text="Revolut" t={t} />
+                    <span className="text-zinc-200 text-sm sm:text-base">UniCredit</span>
+                    <CopyButton text="UniCredit" t={t} />
                   </div>
                 </div>
               </motion.div>
